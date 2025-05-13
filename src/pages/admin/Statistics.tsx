@@ -4,8 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { 
-  BarChart, LineChart, PieChart,
-  CartesianGrid, XAxis, YAxis, Tooltip, Legend, 
+  BarChart as RechartsBarChart, LineChart, PieChart,
+  CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend, 
   Bar, Line, Pie, Cell 
 } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -15,6 +15,9 @@ import MockActionButton from "@/components/admin/MockActionButton";
 
 const Statistics = () => {
   const [dateRange, setDateRange] = useState("last30days");
+  
+  // Define colors for charts
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#FF5733', '#C70039'];
   
   // Mock visitor data
   const visitorsData = [
@@ -96,9 +99,6 @@ const Statistics = () => {
     { name: "Reforma Tributária e Impactos para Empresas", downloads: 65 }
   ];
   
-  // Define colors for charts
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#FF5733', '#C70039'];
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
