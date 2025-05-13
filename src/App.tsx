@@ -12,6 +12,11 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Atendimento from "./pages/Atendimento";
 import Agendamento from "./pages/Agendamento";
+import WikiFaq from "./pages/WikiFaq";
+import Checklists from "./pages/Checklists";
+import Ebooks from "./pages/Ebooks";
+import Newsletter from "./pages/Newsletter";
+import Webinars from "./pages/Webinars";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +36,11 @@ const App = () => (
           <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/atendimento" element={<Atendimento />} />
           <Route path="/agendamento" element={<Agendamento />} />
+          <Route path="/wiki-faq" element={<WikiFaq />} />
+          <Route path="/checklists" element={<Checklists />} />
+          <Route path="/ebooks" element={<Ebooks />} />
+          <Route path="/newsletter" element={<Newsletter />} />
+          <Route path="/webinars" element={<Webinars />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
