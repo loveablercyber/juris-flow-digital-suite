@@ -1,17 +1,12 @@
+
 import React, { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { 
-  BarChart as RechartsBarChart, LineChart, PieChart,
-  CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend, 
-  Bar, Line, Pie, Cell 
-} from "recharts";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, Download } from "lucide-react";
-import MockActionButton from "@/components/admin/MockActionButton";
+import DateRangeSelector from "@/components/admin/statistics/DateRangeSelector";
+import OverviewTab from "@/components/admin/statistics/OverviewTab";
+import VisitorsTab from "@/components/admin/statistics/VisitorsTab";
+import LeadsTab from "@/components/admin/statistics/LeadsTab";
+import ContentTab from "@/components/admin/statistics/ContentTab";
+import TechnicalTab from "@/components/admin/statistics/TechnicalTab";
 
 const Statistics = () => {
   const [dateRange, setDateRange] = useState("last30days");
@@ -103,31 +98,7 @@ const Statistics = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold">Estatísticas Detalhadas</h1>
-        
-        <div className="flex items-center gap-2">
-          <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Período" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="today">Hoje</SelectItem>
-              <SelectItem value="yesterday">Ontem</SelectItem>
-              <SelectItem value="last7days">Últimos 7 dias</SelectItem>
-              <SelectItem value="last30days">Últimos 30 dias</SelectItem>
-              <SelectItem value="thismonth">Este mês</SelectItem>
-              <SelectItem value="lastmonth">Mês passado</SelectItem>
-              <SelectItem value="custom">Personalizado</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Button variant="outline" size="icon">
-            <Calendar className="h-4 w-4" />
-          </Button>
-          
-          <MockActionButton action="Exportar Dados" variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-          </MockActionButton>
-        </div>
+        <DateRangeSelector dateRange={dateRange} setDateRange={setDateRange} />
       </div>
       
       <Tabs defaultValue="overview">
@@ -140,357 +111,36 @@ const Statistics = () => {
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6 pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Total de Visitantes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">12,458</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-green-500">+14%</span> em relação ao período anterior
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Leads Gerados</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">685</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-green-500">+7.4%</span> em relação ao período anterior
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Taxa de Conversão</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">5.5%</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-amber-500">+0.3%</span> em relação ao período anterior
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Tempo Médio no Site</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">2m 48s</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-green-500">+12%</span> em relação ao período anterior
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="col-span-1">
-              <CardHeader>
-                <CardTitle>Tendência de Visitantes</CardTitle>
-                <CardDescription>Visitantes por dia nos últimos 14 dias</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <LineChart
-                  width={500}
-                  height={300}
-                  data={visitorsData}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="visitors" stroke="#8884d8" name="Visitantes" />
-                  <Line type="monotone" dataKey="pageViews" stroke="#82ca9d" name="Visualizações" />
-                </LineChart>
-              </CardContent>
-            </Card>
-            
-            <Card className="col-span-1">
-              <CardHeader>
-                <CardTitle>Fontes de Tráfego</CardTitle>
-                <CardDescription>Origem dos visitantes do site</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <PieChart width={500} height={300}>
-                  <Pie
-                    data={sourcesData}
-                    cx={200}
-                    cy={150}
-                    labelLine={false}
-                    outerRadius={100}
-                    fill="#8884d8"
-                    dataKey="value"
-                    nameKey="name"
-                    label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {sourcesData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `${value}%`} />
-                </PieChart>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-6">
-            <Card className="col-span-1">
-              <CardHeader>
-                <CardTitle>Páginas Mais Visitadas</CardTitle>
-                <CardDescription>Total de visualizações por página</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Página</TableHead>
-                      <TableHead className="text-right">Visualizações</TableHead>
-                      <TableHead className="text-right">Tempo Médio</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {pagesData.map((page, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{page.name}</TableCell>
-                        <TableCell className="text-right">{page.views.toLocaleString()}</TableCell>
-                        <TableCell className="text-right">{page.avg}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </div>
+          <OverviewTab 
+            visitorsData={visitorsData} 
+            sourcesData={sourcesData} 
+            pagesData={pagesData} 
+            colors={COLORS} 
+          />
         </TabsContent>
         
         <TabsContent value="visitors" className="space-y-6 pt-6">
-          {/* Visitor detailed stats would go here */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Dispositivos</CardTitle>
-                <CardDescription>Distribuição de visitantes por dispositivo</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <PieChart width={500} height={300}>
-                  <Pie
-                    data={devicesData}
-                    cx={200}
-                    cy={150}
-                    labelLine={false}
-                    outerRadius={100}
-                    fill="#8884d8"
-                    dataKey="value"
-                    nameKey="name"
-                    label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {devicesData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `${value}%`} />
-                </PieChart>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Navegadores</CardTitle>
-                <CardDescription>Distribuição de visitantes por navegador</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <PieChart width={500} height={300}>
-                  <Pie
-                    data={browsersData}
-                    cx={200}
-                    cy={150}
-                    labelLine={false}
-                    outerRadius={100}
-                    fill="#8884d8"
-                    dataKey="value"
-                    nameKey="name"
-                    label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {browsersData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `${value}%`} />
-                </PieChart>
-              </CardContent>
-            </Card>
-          </div>
+          <VisitorsTab 
+            devicesData={devicesData} 
+            browsersData={browsersData} 
+            colors={COLORS} 
+          />
         </TabsContent>
         
         <TabsContent value="leads" className="space-y-6 pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Leads por Área Jurídica</CardTitle>
-                <CardDescription>Distribuição de leads por especialidade</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <PieChart width={500} height={300}>
-                  <Pie
-                    data={leadsAreaData}
-                    cx={200}
-                    cy={150}
-                    labelLine={false}
-                    outerRadius={100}
-                    fill="#8884d8"
-                    dataKey="value"
-                    nameKey="name"
-                    label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {leadsAreaData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `${value}%`} />
-                </PieChart>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Taxa de Conversão por Área</CardTitle>
-                <CardDescription>Comparação entre leads e consultas agendadas</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <BarChart
-                  width={500}
-                  height={300}
-                  data={conversionData}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="total" fill="#8884d8" name="Total de Leads" />
-                  <Bar dataKey="converted" fill="#82ca9d" name="Consultas Agendadas" />
-                </BarChart>
-              </CardContent>
-            </Card>
-          </div>
+          <LeadsTab 
+            leadsAreaData={leadsAreaData} 
+            conversionData={conversionData} 
+            colors={COLORS} 
+          />
         </TabsContent>
         
         <TabsContent value="content" className="space-y-6 pt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Downloads de E-books</CardTitle>
-              <CardDescription>Total de downloads por material</CardDescription>
-            </CardHeader>
-            <CardContent className="h-80">
-              <BarChart
-                width={800}
-                height={300}
-                data={ebooksData}
-                layout="vertical"
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis dataKey="name" type="category" width={150} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="downloads" fill="#8884d8" name="Downloads" />
-              </BarChart>
-            </CardContent>
-          </Card>
+          <ContentTab ebooksData={ebooksData} />
         </TabsContent>
         
         <TabsContent value="technical" className="space-y-6 pt-6">
-          {/* Technical data would go here */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Performance do Site</CardTitle>
-              <CardDescription>Métricas técnicas de desempenho</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">Tempo de Carregamento</span>
-                    <span className="text-sm font-medium">2.3s</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{ width: "75%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Bom</p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">First Contentful Paint</span>
-                    <span className="text-sm font-medium">1.8s</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{ width: "80%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Bom</p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">Tempo de Interação</span>
-                    <span className="text-sm font-medium">3.2s</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-amber-500 h-2 rounded-full" style={{ width: "60%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Precisa melhorar</p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">Mobile Speed</span>
-                    <span className="text-sm font-medium">4.1s</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-amber-500 h-2 rounded-full" style={{ width: "55%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Precisa melhorar</p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">SEO Score</span>
-                    <span className="text-sm font-medium">87/100</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{ width: "87%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Bom</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <TechnicalTab />
         </TabsContent>
       </Tabs>
     </div>
