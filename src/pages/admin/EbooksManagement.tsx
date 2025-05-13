@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { BarChart, Plus, Search, Edit, Trash, Eye, Download, Upload, FileText } from "lucide-react";
+import { BarChart4, Plus, Search, Edit, Trash, Eye, Download, Upload, FileText, Mail } from "lucide-react";
 import MockActionButton from "@/components/admin/MockActionButton";
 import { toast } from "@/hooks/use-toast";
 import { 
@@ -15,7 +16,6 @@ import {
   CartesianGrid, XAxis, YAxis, Tooltip, Legend, 
   Bar, Line, Pie, Cell 
 } from "recharts";
-import Mail from 'lucide-react';
 
 const EbooksManagement = () => {
   const [view, setView] = useState<"list" | "edit" | "new" | "leads">("list");
@@ -530,7 +530,7 @@ const EbooksManagement = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <BarChart className="h-5 w-5 mr-2" />
+              <BarChart4 className="h-5 w-5 mr-2" />
               Desempenho de E-books
             </CardTitle>
           </CardHeader>
