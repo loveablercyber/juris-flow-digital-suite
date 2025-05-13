@@ -1,7 +1,11 @@
 
 import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, PieChart } from "recharts";
+import { 
+  BarChart, LineChart, PieChart,
+  CartesianGrid, XAxis, YAxis, Tooltip, Legend, 
+  Bar, Line, Pie, Cell 
+} from "recharts";
 import { BarChart as BarChartIcon, Users, Calendar, TrendingUp } from "lucide-react";
 import MockActionButton from "@/components/admin/MockActionButton";
 
@@ -77,6 +81,9 @@ const Dashboard = () => {
       color: "border-orange-200 bg-orange-50"
     }
   ];
+
+  // Define colors for charts
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
   return (
     <div className="space-y-6">
@@ -261,9 +268,5 @@ const Dashboard = () => {
     </div>
   );
 };
-
-// Add recharts required components
-const { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Line, Pie, Cell } = require('recharts');
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 export default Dashboard;

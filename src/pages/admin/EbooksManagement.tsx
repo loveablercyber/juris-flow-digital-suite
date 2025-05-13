@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { BarChart, Plus, Search, Edit, Trash, Eye, Download, Upload, FileText } from "lucide-react";
 import MockActionButton from "@/components/admin/MockActionButton";
 import { toast } from "@/hooks/use-toast";
+import { 
+  BarChart, LineChart, PieChart,
+  CartesianGrid, XAxis, YAxis, Tooltip, Legend, 
+  Bar, Line, Pie, Cell 
+} from "recharts";
+import Mail from 'lucide-react';
 
 const EbooksManagement = () => {
   const [view, setView] = useState<"list" | "edit" | "new" | "leads">("list");
@@ -563,10 +568,5 @@ const EbooksManagement = () => {
     </div>
   );
 };
-
-// Add recharts required components
-const { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } = require('recharts');
-// Add Mail component
-const Mail = require('lucide-react').Mail;
 
 export default EbooksManagement;

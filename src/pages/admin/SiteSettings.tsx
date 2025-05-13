@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Save, Upload, Globe, Moon, Sun, Image, PaintBucket, Languages, Mail } from "lucide-react";
 import MockActionButton from "@/components/admin/MockActionButton";
+import { Badge } from "@/components/ui/badge";
 
 const SiteSettings = () => {
   const [colorMode, setColorMode] = useState<'light' | 'dark' | 'system'>('light');

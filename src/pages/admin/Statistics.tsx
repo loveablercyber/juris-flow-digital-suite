@@ -1,10 +1,15 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { BarChart, LineChart, PieChart } from "recharts";
+import { 
+  BarChart, LineChart, PieChart,
+  CartesianGrid, XAxis, YAxis, Tooltip, Legend, 
+  Bar, Line, Pie, Cell 
+} from "recharts";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { Calendar, Download } from "lucide-react";
 import MockActionButton from "@/components/admin/MockActionButton";
 
@@ -90,6 +95,9 @@ const Statistics = () => {
     { name: "Direito Imobiliário na Prática", downloads: 76 },
     { name: "Reforma Tributária e Impactos para Empresas", downloads: 65 }
   ];
+  
+  // Define colors for charts
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#FF5733', '#C70039'];
 
   return (
     <div className="space-y-6">
@@ -490,7 +498,6 @@ const Statistics = () => {
 };
 
 // Add recharts required components
-const { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Line, Pie, Cell } = require('recharts');
 // Add Table components
 const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } = require("@/components/ui/table");
 const { Badge } = require("@/components/ui/badge");

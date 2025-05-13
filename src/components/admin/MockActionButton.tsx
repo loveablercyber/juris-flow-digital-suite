@@ -9,9 +9,10 @@ interface MockActionButtonProps {
   className?: string;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   size?: "default" | "sm" | "lg" | "icon";
+  children?: React.ReactNode;
 }
 
-const MockActionButton = ({ action, className, variant = "default", size = "default" }: MockActionButtonProps) => {
+const MockActionButton = ({ action, className, variant = "default", size = "default", children }: MockActionButtonProps) => {
   const handleAction = () => {
     toast({
       title: "Ação simulada",
@@ -26,7 +27,7 @@ const MockActionButton = ({ action, className, variant = "default", size = "defa
       onClick={handleAction}
       className={className}
     >
-      <Check className="mr-2 h-4 w-4" />
+      {children || <Check className="mr-2 h-4 w-4" />}
       {action}
     </Button>
   );
