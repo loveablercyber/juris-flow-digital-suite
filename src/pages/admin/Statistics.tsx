@@ -497,10 +497,4 @@ const Statistics = () => {
   );
 };
 
-// Add recharts required components
-// Add Table components
-const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } = require("@/components/ui/table");
-const { Badge } = require("@/components/ui/badge");
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#FF5733', '#C70039'];
-
 export default Statistics;
