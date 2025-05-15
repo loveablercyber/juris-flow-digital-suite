@@ -173,7 +173,7 @@ const Propostas = () => {
       });
     } else {
       // Adicionar nova proposta
-      const novaProposta = {
+      const novaProposta: Proposta = {
         ...currentProposta,
         id: Date.now().toString(),
         status: "rascunho",
@@ -192,7 +192,7 @@ const Propostas = () => {
   const handleEnviarProposta = (propostaId: string) => {
     setPropostas(propostas.map(p => 
       p.id === propostaId 
-        ? { ...p, status: "enviada", dataEnvio: new Date().toISOString().split('T')[0] } 
+        ? { ...p, status: "enviada" as const, dataEnvio: new Date().toISOString().split('T')[0] } 
         : p
     ));
     

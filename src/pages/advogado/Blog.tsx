@@ -159,7 +159,7 @@ const Blog = () => {
       return;
     }
 
-    const status = publicar ? "publicado" : "rascunho";
+    const status = publicar ? "publicado" : "rascunho" as const;
     const dataPublicacao = publicar ? new Date().toISOString().split('T')[0] : null;
 
     if (currentArtigo.id) {
@@ -178,7 +178,7 @@ const Blog = () => {
       });
     } else {
       // Adicionar novo artigo
-      const novoArtigo = {
+      const novoArtigo: Artigo = {
         ...currentArtigo,
         id: Date.now().toString(),
         status,
