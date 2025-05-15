@@ -91,33 +91,31 @@ const AdminSidebar = () => {
   ];
   
   return (
-    <SidebarProvider defaultOpen={true}>
-      <Sidebar className="border-r">
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {menuItems.map((item) => (
-                  <SidebarMenuItem key={item.path}>
-                    <SidebarMenuButton 
-                      asChild 
-                      isActive={isActive(item.path)}
-                    >
-                      <NavLink to={item.path} className="flex items-center">
-                        <item.icon className="mr-2 h-4 w-4" />
-                        <span>{item.label}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarTrigger className="absolute right-[-12px] top-6" />
-      </Sidebar>
-    </SidebarProvider>
+    <Sidebar className="border-r" data-side="left">
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.path}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={isActive(item.path)}
+                  >
+                    <NavLink to={item.path} className="flex items-center">
+                      <item.icon className="mr-2 h-4 w-4" />
+                      <span>{item.label}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarTrigger className="absolute right-[-12px] top-6" />
+    </Sidebar>
   );
 };
 
