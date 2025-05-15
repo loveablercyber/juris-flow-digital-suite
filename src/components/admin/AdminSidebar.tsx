@@ -92,7 +92,12 @@ const AdminSidebar = () => {
   
   return (
     <SidebarProvider>
-      <Sidebar className="border-r" data-side="left">
+      <Sidebar 
+        className="border-r h-screen" 
+        data-side="left"
+        collapsible="icon"
+        variant="sidebar"
+      >
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
