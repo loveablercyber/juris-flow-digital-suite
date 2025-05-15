@@ -33,6 +33,18 @@ import Statistics from "./pages/admin/Statistics";
 import EbooksManagement from "./pages/admin/EbooksManagement";
 import LogsActivity from "./pages/admin/LogsActivity";
 
+// Advogado pages
+import AdvogadoLogin from "./pages/advogado/Login";
+import AdvogadoLayout from "./components/advogado/AdvogadoLayout";
+import AdvogadoDashboard from "./pages/advogado/Dashboard";
+import Calendario from "./pages/advogado/Calendario";
+import Documentos from "./pages/advogado/Documentos";
+import Tarefas from "./pages/advogado/Tarefas";
+import Propostas from "./pages/advogado/Propostas";
+import AdvogadoBlog from "./pages/advogado/Blog";
+import Chat from "./pages/advogado/Chat";
+import AdvogadoSettings from "./pages/advogado/Settings";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -69,6 +81,19 @@ const App = () => (
             <Route path="statistics" element={<Statistics />} />
             <Route path="ebooks" element={<EbooksManagement />} />
             <Route path="logs" element={<LogsActivity />} />
+          </Route>
+          
+          {/* Advogado Routes */}
+          <Route path="/advogado" element={<AdvogadoLogin />} />
+          <Route path="/advogado" element={<AdvogadoLayout />}>
+            <Route path="dashboard" element={<AdvogadoDashboard />} />
+            <Route path="calendario" element={<Calendario />} />
+            <Route path="documentos" element={<Documentos />} />
+            <Route path="tarefas" element={<Tarefas />} />
+            <Route path="propostas" element={<Propostas />} />
+            <Route path="blog" element={<AdvogadoBlog />} />
+            <Route path="chat" element={<Chat />} />
+            <Route path="settings" element={<AdvogadoSettings />} />
           </Route>
           
           {/* Catch-all route */}
