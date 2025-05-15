@@ -44,6 +44,7 @@ import Propostas from "./pages/advogado/Propostas";
 import AdvogadoBlog from "./pages/advogado/Blog";
 import Chat from "./pages/advogado/Chat";
 import AdvogadoSettings from "./pages/advogado/Settings";
+import Agendamentos from "./pages/advogado/Agendamentos";
 
 const queryClient = new QueryClient();
 
@@ -94,6 +95,7 @@ const App = () => (
             <Route path="blog" element={<AdvogadoBlog />} />
             <Route path="chat" element={<Chat />} />
             <Route path="settings" element={<AdvogadoSettings />} />
+            <Route path="agendamentos" element={<Agendamentos />} />
           </Route>
           
           {/* Catch-all route */}

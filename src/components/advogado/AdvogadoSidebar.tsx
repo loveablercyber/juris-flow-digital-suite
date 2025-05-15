@@ -10,7 +10,8 @@ import {
   FileEdit,
   Send,
   MessageSquare,
-  Settings
+  Settings,
+  CalendarClock
 } from "lucide-react";
 import {
   Sidebar,
@@ -46,6 +47,11 @@ const AdvogadoSidebar = () => {
       icon: Calendar,
       label: "Calendário",
       path: "/advogado/calendario",
+    },
+    {
+      icon: CalendarClock,
+      label: "Agendamentos",
+      path: "/advogado/agendamentos",
     },
     {
       icon: FileText,
