@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -77,7 +76,7 @@ const mockClientes = [
   { id: "5", name: "Paula Costa" }
 ];
 
-// Mock documentos
+// Mock documentos - Updated to include description property for each document
 const mockDocumentos = [
   { 
     id: "doc1", 
@@ -88,7 +87,8 @@ const mockDocumentos = [
     client: "1",
     uploadedAt: "12/05/2023",
     category: "Contratos",
-    lastAccessed: "25/04/2023" 
+    lastAccessed: "25/04/2023",
+    description: "Contrato padrão de prestação de serviços advocatícios."
   },
   { 
     id: "doc2", 
@@ -99,7 +99,8 @@ const mockDocumentos = [
     client: "1",
     uploadedAt: "14/05/2023",
     category: "Procurações",
-    lastAccessed: "05/05/2023" 
+    lastAccessed: "05/05/2023",
+    description: "Procuração com poderes específicos para representação em juízo."
   },
   { 
     id: "doc3", 
@@ -110,7 +111,8 @@ const mockDocumentos = [
     client: "2",
     uploadedAt: "18/05/2023",
     category: "Comprovantes",
-    lastAccessed: "18/05/2023" 
+    lastAccessed: "18/05/2023",
+    description: "Comprovante de pagamento de honorários."
   },
   { 
     id: "doc4", 
@@ -121,7 +123,8 @@ const mockDocumentos = [
     client: "3",
     uploadedAt: "20/05/2023",
     category: "Petições",
-    lastAccessed: "21/05/2023" 
+    lastAccessed: "21/05/2023",
+    description: "Petição inicial para processo de indenização por danos morais."
   },
   { 
     id: "doc5", 
@@ -132,7 +135,8 @@ const mockDocumentos = [
     client: "4",
     uploadedAt: "22/05/2023",
     category: "Certidões",
-    lastAccessed: "22/05/2023" 
+    lastAccessed: "22/05/2023",
+    description: "Certidão negativa de débitos trabalhistas."
   },
   { 
     id: "doc6", 
@@ -143,7 +147,8 @@ const mockDocumentos = [
     client: "5",
     uploadedAt: "24/05/2023",
     category: "Petições",
-    lastAccessed: "25/05/2023" 
+    lastAccessed: "25/05/2023",
+    description: "Contestação para processo de cobrança indevida."
   }
 ];
 
