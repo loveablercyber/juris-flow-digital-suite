@@ -11,7 +11,8 @@ import {
   Send,
   MessageSquare,
   Settings,
-  CalendarClock
+  CalendarClock,
+  Briefcase
 } from "lucide-react";
 import {
   Sidebar,
@@ -42,6 +43,11 @@ const AdvogadoSidebar = () => {
       icon: LayoutDashboard,
       label: "Dashboard",
       path: "/advogado/dashboard",
+    },
+    {
+      icon: Briefcase,
+      label: "Processos",
+      path: "/advogado/processos",
     },
     {
       icon: Calendar,

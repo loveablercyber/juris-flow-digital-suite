@@ -12,18 +12,62 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Filter, Search } from "lucide-react";
+import { 
+  Filter, 
+  Search, 
+  Edit, 
+  Save, 
+  X,
+  Trash2
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
 
-const mockProcesses = [
-  { id: "2023-0001", client: "Maria Santos", subject: "Divórcio", status: "Em andamento", date: "10/05/2023", urgency: "Alta" },
-  { id: "2023-0002", client: "João Pereira", subject: "Pensão Alimentícia", status: "Aguardando documentos", date: "15/05/2023", urgency: "Média" },
-  { id: "2023-0003", client: "Ana Oliveira", subject: "Inventário", status: "Concluído", date: "22/05/2023", urgency: "Baixa" },
-  { id: "2023-0004", client: "Carlos Silva", subject: "Contrato de Aluguel", status: "Em andamento", date: "01/06/2023", urgency: "Média" },
-  { id: "2023-0005", client: "Paula Costa", subject: "Rescisão Trabalhista", status: "Audiência marcada", date: "10/06/2023", urgency: "Alta" },
-  { id: "2023-0006", client: "Roberto Alves", subject: "Ação de Despejo", status: "Aguardando documentos", date: "15/06/2023", urgency: "Média" },
-  { id: "2023-0007", client: "Fernanda Lima", subject: "Posse de Imóvel", status: "Em andamento", date: "20/06/2023", urgency: "Alta" },
-  { id: "2023-0008", client: "Marcelo Gomes", subject: "Reclamação Trabalhista", status: "Concluído", date: "25/06/2023", urgency: "Baixa" },
+interface Process {
+  id: string;
+  client: string;
+  subject: string;
+  status: string;
+  date: string;
+  urgency: string;
+  description?: string; // Campo opcional para descrição
+  notes?: string; // Campo opcional para anotações
+}
+
+const mockProcesses: Process[] = [
+  { id: "2023-0001", client: "Maria Santos", subject: "Divórcio", status: "Em andamento", date: "10/05/2023", urgency: "Alta", description: "Processo de divórcio litigioso com disputa de bens e guarda de filhos." },
+  { id: "2023-0002", client: "João Pereira", subject: "Pensão Alimentícia", status: "Aguardando documentos", date: "15/05/2023", urgency: "Média", description: "Revisão de pensão alimentícia por mudança na situação financeira." },
+  { id: "2023-0003", client: "Ana Oliveira", subject: "Inventário", status: "Concluído", date: "22/05/2023", urgency: "Baixa", description: "Inventário e partilha de bens após falecimento." },
+  { id: "2023-0004", client: "Carlos Silva", subject: "Contrato de Aluguel", status: "Em andamento", date: "01/06/2023", urgency: "Média", description: "Análise e elaboração de contrato de locação comercial." },
+  { id: "2023-0005", client: "Paula Costa", subject: "Rescisão Trabalhista", status: "Audiência marcada", date: "10/06/2023", urgency: "Alta", description: "Processo de rescisão indireta do contrato de trabalho." },
+  { id: "2023-0006", client: "Roberto Alves", subject: "Ação de Despejo", status: "Aguardando documentos", date: "15/06/2023", urgency: "Média", description: "Ação de despejo por falta de pagamento." },
+  { id: "2023-0007", client: "Fernanda Lima", subject: "Posse de Imóvel", status: "Em andamento", date: "20/06/2023", urgency: "Alta", description: "Disputa de posse de imóvel urbano." },
+  { id: "2023-0008", client: "Marcelo Gomes", subject: "Reclamação Trabalhista", status: "Concluído", date: "25/06/2023", urgency: "Baixa", description: "Processo trabalhista por horas extras não pagas." },
 ];
+
+const statusOptions = [
+  "Em andamento",
+  "Aguardando documentos",
+  "Concluído",
+  "Audiência marcada"
+];
+
+const urgencyOptions = ["Alta", "Média", "Baixa"];
 
 const statusColors: Record<string, string> = {
   "Em andamento": "bg-blue-100 text-blue-800",
@@ -35,8 +79,13 @@ const statusColors: Record<string, string> = {
 const Dashboard = () => {
   const [filter, setFilter] = useState("Todos");
   const [searchTerm, setSearchTerm] = useState("");
+  const [processes, setProcesses] = useState<Process[]>(mockProcesses);
+  const [selectedProcess, setSelectedProcess] = useState<Process | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedProcess, setEditedProcess] = useState<Process | null>(null);
   
-  const filteredProcesses = mockProcesses.filter((process) => {
+  const filteredProcesses = processes.filter((process) => {
     const matchesFilter = filter === "Todos" || process.status === filter;
     const matchesSearch = 
       process.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -47,11 +96,11 @@ const Dashboard = () => {
   });
 
   const statusCounts = {
-    "Todos": mockProcesses.length,
-    "Em andamento": mockProcesses.filter(p => p.status === "Em andamento").length,
-    "Aguardando documentos": mockProcesses.filter(p => p.status === "Aguardando documentos").length,
-    "Concluído": mockProcesses.filter(p => p.status === "Concluído").length,
-    "Audiência marcada": mockProcesses.filter(p => p.status === "Audiência marcada").length,
+    "Todos": processes.length,
+    "Em andamento": processes.filter(p => p.status === "Em andamento").length,
+    "Aguardando documentos": processes.filter(p => p.status === "Aguardando documentos").length,
+    "Concluído": processes.filter(p => p.status === "Concluído").length,
+    "Audiência marcada": processes.filter(p => p.status === "Audiência marcada").length,
   };
 
   const getUrgencyColor = (urgency: string) => {
@@ -60,6 +109,53 @@ const Dashboard = () => {
       case "Média": return "bg-yellow-100 text-yellow-800";
       case "Baixa": return "bg-green-100 text-green-800";
       default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const handleRowClick = (process: Process) => {
+    setSelectedProcess(process);
+    setEditedProcess({...process});
+    setIsEditMode(false);
+    setIsDialogOpen(true);
+  };
+
+  const handleEdit = () => {
+    setIsEditMode(true);
+  };
+
+  const handleSave = () => {
+    if (editedProcess) {
+      const updatedProcesses = processes.map(p => 
+        p.id === editedProcess.id ? editedProcess : p
+      );
+      setProcesses(updatedProcesses);
+      setSelectedProcess(editedProcess);
+      setIsEditMode(false);
+      
+      toast({
+        title: "Processo atualizado",
+        description: `O processo ${editedProcess.id} foi atualizado com sucesso.`,
+      });
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectedProcess) {
+      const updatedProcesses = processes.filter(p => p.id !== selectedProcess.id);
+      setProcesses(updatedProcesses);
+      setIsDialogOpen(false);
+      
+      toast({
+        title: "Processo removido",
+        description: `O processo ${selectedProcess.id} foi removido com sucesso.`,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleInputChange = (field: keyof Process, value: string) => {
+    if (editedProcess) {
+      setEditedProcess({ ...editedProcess, [field]: value });
     }
   };
 
@@ -90,7 +186,7 @@ const Dashboard = () => {
             <CardTitle className="text-sm font-medium">Total de Processos</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockProcesses.length}</div>
+            <div className="text-2xl font-bold">{processes.length}</div>
             <p className="text-xs text-muted-foreground">Atualizados em tempo real</p>
           </CardContent>
         </Card>
@@ -99,7 +195,7 @@ const Dashboard = () => {
             <CardTitle className="text-sm font-medium">Em Andamento</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockProcesses.filter(p => p.status === "Em andamento").length}</div>
+            <div className="text-2xl font-bold">{processes.filter(p => p.status === "Em andamento").length}</div>
             <p className="text-xs text-muted-foreground">Processos ativos</p>
           </CardContent>
         </Card>
@@ -108,7 +204,7 @@ const Dashboard = () => {
             <CardTitle className="text-sm font-medium">Alta Urgência</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{mockProcesses.filter(p => p.urgency === "Alta").length}</div>
+            <div className="text-2xl font-bold text-red-600">{processes.filter(p => p.urgency === "Alta").length}</div>
             <p className="text-xs text-muted-foreground">Processos prioritários</p>
           </CardContent>
         </Card>
@@ -117,7 +213,7 @@ const Dashboard = () => {
             <CardTitle className="text-sm font-medium">Concluídos</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{mockProcesses.filter(p => p.status === "Concluído").length}</div>
+            <div className="text-2xl font-bold text-green-600">{processes.filter(p => p.status === "Concluído").length}</div>
             <p className="text-xs text-muted-foreground">Mês atual</p>
           </CardContent>
         </Card>
@@ -150,7 +246,11 @@ const Dashboard = () => {
               <TableBody>
                 {filteredProcesses.length > 0 ? (
                   filteredProcesses.map((process) => (
-                    <TableRow key={process.id} className="cursor-pointer hover:bg-muted/50">
+                    <TableRow 
+                      key={process.id} 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleRowClick(process)}
+                    >
                       <TableCell className="font-medium">{process.id}</TableCell>
                       <TableCell>{process.client}</TableCell>
                       <TableCell>{process.subject}</TableCell>
@@ -179,6 +279,175 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </Card>
+
+      {/* Modal de detalhes e edição */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>
+              {isEditMode ? "Editar Processo" : "Detalhes do Processo"}
+            </DialogTitle>
+            <DialogDescription>
+              {isEditMode 
+                ? "Edite os detalhes do processo abaixo."
+                : "Visualize os detalhes do processo."
+              }
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="id" className="text-right font-medium">Número:</label>
+              <Input
+                id="id"
+                value={editedProcess?.id || ""}
+                onChange={(e) => handleInputChange("id", e.target.value)}
+                className="col-span-3"
+                disabled={!isEditMode}
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="client" className="text-right font-medium">Cliente:</label>
+              <Input
+                id="client"
+                value={editedProcess?.client || ""}
+                onChange={(e) => handleInputChange("client", e.target.value)}
+                className="col-span-3"
+                disabled={!isEditMode}
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="subject" className="text-right font-medium">Assunto:</label>
+              <Input
+                id="subject"
+                value={editedProcess?.subject || ""}
+                onChange={(e) => handleInputChange("subject", e.target.value)}
+                className="col-span-3"
+                disabled={!isEditMode}
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="status" className="text-right font-medium">Status:</label>
+              {isEditMode ? (
+                <Select
+                  value={editedProcess?.status}
+                  onValueChange={(value) => handleInputChange("status", value)}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Selecione o status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {status}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="col-span-3">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[editedProcess?.status || ""] || ""}`}>
+                    {editedProcess?.status}
+                  </span>
+                </div>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="date" className="text-right font-medium">Data:</label>
+              <Input
+                id="date"
+                value={editedProcess?.date || ""}
+                onChange={(e) => handleInputChange("date", e.target.value)}
+                className="col-span-3"
+                disabled={!isEditMode}
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="urgency" className="text-right font-medium">Urgência:</label>
+              {isEditMode ? (
+                <Select
+                  value={editedProcess?.urgency}
+                  onValueChange={(value) => handleInputChange("urgency", value)}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Selecione a urgência" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {urgencyOptions.map((urgency) => (
+                      <SelectItem key={urgency} value={urgency}>
+                        {urgency}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="col-span-3">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getUrgencyColor(editedProcess?.urgency || "")}`}>
+                    {editedProcess?.urgency}
+                  </span>
+                </div>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="description" className="text-right font-medium">Descrição:</label>
+              <Input
+                id="description"
+                value={editedProcess?.description || ""}
+                onChange={(e) => handleInputChange("description", e.target.value)}
+                className="col-span-3"
+                disabled={!isEditMode}
+              />
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="notes" className="text-right font-medium">Anotações:</label>
+              <Input
+                id="notes"
+                value={editedProcess?.notes || ""}
+                onChange={(e) => handleInputChange("notes", e.target.value)}
+                className="col-span-3"
+                disabled={!isEditMode}
+              />
+            </div>
+          </div>
+          
+          <DialogFooter className="flex justify-between sm:justify-between">
+            <div>
+              {!isEditMode && (
+                <Button variant="destructive" onClick={handleDelete}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Excluir
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              {isEditMode ? (
+                <>
+                  <Button variant="outline" onClick={() => setIsEditMode(false)}>
+                    <X className="h-4 w-4 mr-2" />
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleSave}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Salvar
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={handleEdit}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Editar
+                </Button>
+              )}
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
