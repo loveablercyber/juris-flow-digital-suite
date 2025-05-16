@@ -54,7 +54,7 @@ const DocumentFilters: React.FC<DocumentFiltersProps> = ({
             <SelectValue placeholder="Filtrar por cliente" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todos os clientes</SelectItem>
+            <SelectItem value="all">Todos os clientes</SelectItem>
             {clients.map(cliente => (
               <SelectItem key={cliente.id} value={cliente.id}>
                 {cliente.name}
@@ -71,7 +71,7 @@ const DocumentFilters: React.FC<DocumentFiltersProps> = ({
             <SelectValue placeholder="Filtrar por categoria" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todas as categorias</SelectItem>
+            <SelectItem value="all">Todas as categorias</SelectItem>
             <SelectItem value="Contratos">Contratos</SelectItem>
             <SelectItem value="Procurações">Procurações</SelectItem>
             <SelectItem value="Petições">Petições</SelectItem>

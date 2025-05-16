@@ -32,8 +32,8 @@ const mockFolders = [
 ];
 
 const Documentos = () => {
-  const [selectedClient, setSelectedClient] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedClient, setSelectedClient] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [isDocumentDetailsOpen, setIsDocumentDetailsOpen] = useState(false);
@@ -66,10 +66,10 @@ const Documentos = () => {
   // Função para filtrar documentos
   const filteredDocumentos = documentos.filter(doc => {
     // Filtro por cliente
-    const clientMatch = selectedClient ? doc.client === selectedClient : true;
+    const clientMatch = selectedClient === "all" ? true : doc.client === selectedClient;
     
     // Filtro por categoria
-    const categoryMatch = selectedCategory ? doc.category === selectedCategory : true;
+    const categoryMatch = selectedCategory === "all" ? true : doc.category === selectedCategory;
     
     // Filtro por pesquisa
     const searchMatch = searchTerm 
