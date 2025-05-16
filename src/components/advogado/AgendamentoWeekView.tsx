@@ -24,6 +24,9 @@ interface Agendamento {
   cliente: Cliente;
   assunto: string;
   observacoes: string;
+  advogado?: string;
+  areaInteresse?: string;
+  detalhesCase?: string;
 }
 
 interface AgendamentoWeekViewProps {
@@ -132,6 +135,16 @@ export const AgendamentoWeekView: React.FC<AgendamentoWeekViewProps> = ({
                         <div className="text-xs text-muted-foreground line-clamp-2">
                           {agendamento.assunto}
                         </div>
+                        {agendamento.advogado && (
+                          <div className="text-xs mt-1">
+                            <span className="font-medium">Advogado:</span> {agendamento.advogado}
+                          </div>
+                        )}
+                        {agendamento.areaInteresse && (
+                          <div className="text-xs">
+                            <span className="font-medium">Área:</span> {agendamento.areaInteresse}
+                          </div>
+                        )}
                         <div className="mt-auto pt-1">
                           <Badge variant={agendamento.tipo === "presencial" ? "outline" : "secondary"} className="text-xs">
                             {agendamento.tipo === "presencial" ? "Presencial" : "Vídeo"}

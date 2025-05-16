@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { format, addDays, startOfWeek, isEqual } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -10,7 +9,8 @@ import {
   Settings, 
   CheckCircle2, 
   XCircle, 
-  CalendarClock 
+  CalendarClock,
+  User
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -69,6 +69,9 @@ interface Agendamento {
   cliente: Cliente;
   assunto: string;
   observacoes: string;
+  advogado?: string;
+  areaInteresse?: string;
+  detalhesCase?: string;
 }
 
 const Agendamentos = () => {
@@ -90,7 +93,10 @@ const Agendamentos = () => {
         email: "joao.silva@exemplo.com"
       },
       assunto: "Consulta sobre processo trabalhista",
-      observacoes: "Cliente pediu para revisar documentos da empresa"
+      observacoes: "Cliente pediu para revisar documentos da empresa",
+      advogado: "Dr. Paulo Menezes",
+      areaInteresse: "Direito Trabalhista",
+      detalhesCase: "Funcionário demitido sem justa causa alega não ter recebido verbas rescisórias."
     },
     {
       id: "2",
@@ -105,7 +111,9 @@ const Agendamentos = () => {
         email: "maria.oliveira@exemplo.com"
       },
       assunto: "Revisão de contrato",
-      observacoes: ""
+      observacoes: "",
+      advogado: "Dra. Ana Costa",
+      areaInteresse: "Direito Civil"
     },
     {
       id: "3",
@@ -120,7 +128,10 @@ const Agendamentos = () => {
         email: "carlos.santos@exemplo.com"
       },
       assunto: "Processo de divórcio",
-      observacoes: "Trazer documentos do casal"
+      observacoes: "Trazer documentos do casal",
+      advogado: "Dra. Carla Mendonça",
+      areaInteresse: "Direito de Família",
+      detalhesCase: "Casal com dois filhos menores. Disputa sobre guarda compartilhada."
     }
   ]);
   
@@ -144,7 +155,10 @@ const Agendamentos = () => {
     tipo: "presencial",
     status: "pendente",
     assunto: "",
-    observacoes: ""
+    observacoes: "",
+    advogado: "",
+    areaInteresse: "",
+    detalhesCase: ""
   });
   
   const [newCliente, setNewCliente] = useState<Partial<Cliente>>({
@@ -152,6 +166,27 @@ const Agendamentos = () => {
     telefone: "",
     email: ""
   });
+
+  // Lista de áreas de atuação do escritório
+  const areasAtuacao = [
+    "Direito Civil",
+    "Direito de Família",
+    "Direito Trabalhista",
+    "Direito Empresarial",
+    "Direito Tributário",
+    "Direito Penal",
+    "Direito Imobiliário",
+    "Direito do Consumidor"
+  ];
+  
+  // Lista de advogados do escritório
+  const advogados = [
+    "Dr. Paulo Menezes",
+    "Dra. Ana Costa",
+    "Dr. Ricardo Ferreira",
+    "Dra. Carla Mendonça",
+    "Dr. Fernando Alves"
+  ];
   
   // Filtra os agendamentos para o dia selecionado
   const agendamentosDoDia = agendamentos.filter(
@@ -192,7 +227,10 @@ const Agendamentos = () => {
         email: newCliente.email || ""
       },
       assunto: newAgendamento.assunto || "",
-      observacoes: newAgendamento.observacoes || ""
+      observacoes: newAgendamento.observacoes || "",
+      advogado: newAgendamento.advogado,
+      areaInteresse: newAgendamento.areaInteresse,
+      detalhesCase: newAgendamento.detalhesCase
     };
     
     setAgendamentos([...agendamentos, novoAgendamento]);
@@ -209,7 +247,10 @@ const Agendamentos = () => {
       tipo: "presencial",
       status: "pendente",
       assunto: "",
-      observacoes: ""
+      observacoes: "",
+      advogado: "",
+      areaInteresse: "",
+      detalhesCase: ""
     });
     
     setNewCliente({
@@ -412,10 +453,31 @@ const Agendamentos = () => {
                                 <p>{agendamento.assunto}</p>
                               </div>
                               
+                              {agendamento.advogado && (
+                                <div>
+                                  <h4 className="font-semibold">Advogado Responsável</h4>
+                                  <p>{agendamento.advogado}</p>
+                                </div>
+                              )}
+                              
+                              {agendamento.areaInteresse && (
+                                <div>
+                                  <h4 className="font-semibold">Área de Interesse</h4>
+                                  <p>{agendamento.areaInteresse}</p>
+                                </div>
+                              )}
+                              
                               <div>
                                 <h4 className="font-semibold">Contato</h4>
                                 <p>{agendamento.cliente.telefone} | {agendamento.cliente.email}</p>
                               </div>
+                              
+                              {agendamento.detalhesCase && (
+                                <div>
+                                  <h4 className="font-semibold">Detalhes do Caso</h4>
+                                  <p>{agendamento.detalhesCase}</p>
+                                </div>
+                              )}
                               
                               {agendamento.observacoes && (
                                 <div>
@@ -509,8 +571,9 @@ const Agendamentos = () => {
                       <TableHead>Data</TableHead>
                       <TableHead>Horário</TableHead>
                       <TableHead>Cliente</TableHead>
+                      <TableHead>Advogado</TableHead>
+                      <TableHead>Área</TableHead>
                       <TableHead>Tipo</TableHead>
-                      <TableHead>Assunto</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="text-right">Ações</TableHead>
                     </TableRow>
@@ -531,13 +594,12 @@ const Agendamentos = () => {
                                 <p className="text-xs text-muted-foreground">{agendamento.cliente.telefone}</p>
                               </div>
                             </TableCell>
+                            <TableCell>{agendamento.advogado || "-"}</TableCell>
+                            <TableCell>{agendamento.areaInteresse || "-"}</TableCell>
                             <TableCell>
                               <Badge variant={agendamento.tipo === "presencial" ? "outline" : "secondary"}>
                                 {agendamento.tipo === "presencial" ? "Presencial" : "Vídeo"}
                               </Badge>
-                            </TableCell>
-                            <TableCell className="max-w-[200px] truncate">
-                              {agendamento.assunto}
                             </TableCell>
                             <TableCell>
                               <Badge className={getStatusColor(agendamento.status)}>
@@ -573,7 +635,7 @@ const Agendamentos = () => {
                         ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-6">
+                        <TableCell colSpan={8} className="text-center py-6">
                           Nenhum agendamento encontrado
                         </TableCell>
                       </TableRow>
@@ -664,40 +726,45 @@ const Agendamentos = () => {
             <Separator />
             
             <div className="space-y-2">
-              <h3 className="font-medium">Dados do Cliente</h3>
+              <h3 className="font-medium">Dados do Agendamento</h3>
               
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="nome">Nome Completo*</Label>
-                  <Input 
-                    id="nome" 
-                    value={newCliente.nome} 
-                    onChange={(e) => setNewCliente({...newCliente, nome: e.target.value})} 
-                    placeholder="Nome do cliente"
-                  />
+                  <Label htmlFor="advogado">Advogado Responsável</Label>
+                  <Select 
+                    value={newAgendamento.advogado} 
+                    onValueChange={(value) => setNewAgendamento({...newAgendamento, advogado: value})}
+                  >
+                    <SelectTrigger id="advogado">
+                      <SelectValue placeholder="Selecione o advogado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {advogados.map((advogado) => (
+                        <SelectItem key={advogado} value={advogado}>
+                          {advogado}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="telefone">Telefone*</Label>
-                    <Input 
-                      id="telefone" 
-                      value={newCliente.telefone} 
-                      onChange={(e) => setNewCliente({...newCliente, telefone: e.target.value})} 
-                      placeholder="(00) 00000-0000"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input 
-                      id="email" 
-                      value={newCliente.email} 
-                      onChange={(e) => setNewCliente({...newCliente, email: e.target.value})} 
-                      placeholder="email@exemplo.com"
-                      type="email"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="areaInteresse">Área de Interesse</Label>
+                  <Select 
+                    value={newAgendamento.areaInteresse} 
+                    onValueChange={(value) => setNewAgendamento({...newAgendamento, areaInteresse: value})}
+                  >
+                    <SelectTrigger id="areaInteresse">
+                      <SelectValue placeholder="Selecione a área" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {areasAtuacao.map((area) => (
+                        <SelectItem key={area} value={area}>
+                          {area}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
@@ -715,13 +782,24 @@ const Agendamentos = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="observacoes">Observações</Label>
+              <Label htmlFor="detalhesCase">Detalhes do Caso</Label>
+              <Textarea 
+                id="detalhesCase" 
+                value={newAgendamento.detalhesCase} 
+                onChange={(e) => setNewAgendamento({...newAgendamento, detalhesCase: e.target.value})} 
+                placeholder="Descreva os detalhes do caso"
+                rows={3}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="observacoes">Observações Adicionais</Label>
               <Textarea 
                 id="observacoes" 
                 value={newAgendamento.observacoes} 
                 onChange={(e) => setNewAgendamento({...newAgendamento, observacoes: e.target.value})} 
                 placeholder="Observações adicionais"
-                rows={3}
+                rows={2}
               />
             </div>
           </div>
