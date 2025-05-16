@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,8 +6,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Sun, Moon, Globe, Menu, X } from "lucide-react";
+import { Sun, Moon, Globe, Menu, X, BookOpen, ScrollText, BookMarked, Mail, Video } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Header = () => {
@@ -59,6 +60,14 @@ const Header = () => {
     { name: language === "pt" ? "Atendimento" : "Contact", path: "/atendimento" },
   ];
 
+  const resourcesLinks = [
+    { name: "FAQ", path: "/wiki-faq", icon: <BookOpen className="mr-2 h-4 w-4" /> },
+    { name: "Checklists", path: "/checklists", icon: <ScrollText className="mr-2 h-4 w-4" /> },
+    { name: "E-books", path: "/ebooks", icon: <BookMarked className="mr-2 h-4 w-4" /> },
+    { name: "Newsletter", path: "/newsletter", icon: <Mail className="mr-2 h-4 w-4" /> },
+    { name: "Webinars", path: "/webinars", icon: <Video className="mr-2 h-4 w-4" /> },
+  ];
+
   return (
     <header
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -83,6 +92,27 @@ const Header = () => {
               {link.name}
             </Link>
           ))}
+          
+          {/* Resources Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="font-medium hover:text-primary transition-colors">
+              {language === "pt" ? "Recursos" : "Resources"}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuLabel>
+                {language === "pt" ? "Recursos Disponíveis" : "Available Resources"}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {resourcesLinks.map((resource) => (
+                <DropdownMenuItem key={resource.path} asChild>
+                  <Link to={resource.path} className="flex items-center">
+                    {resource.icon}
+                    {resource.name}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
@@ -153,6 +183,25 @@ const Header = () => {
                 {link.name}
               </Link>
             ))}
+            
+            {/* Resources Section */}
+            <div className="py-4 border-t border-border">
+              <div className="text-sm font-medium text-muted-foreground mb-2">
+                {language === "pt" ? "Recursos" : "Resources"}
+              </div>
+              {resourcesLinks.map((resource) => (
+                <Link
+                  key={resource.path}
+                  to={resource.path}
+                  className="flex items-center py-2 font-medium hover:text-primary transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {resource.icon}
+                  <span className="ml-2">{resource.name}</span>
+                </Link>
+              ))}
+            </div>
+
             <div className="flex items-center gap-4 py-2">
               <Button
                 variant="outline"
