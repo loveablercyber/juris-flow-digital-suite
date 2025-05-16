@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -45,6 +44,7 @@ import AdvogadoBlog from "./pages/advogado/Blog";
 import Chat from "./pages/advogado/Chat";
 import AdvogadoSettings from "./pages/advogado/Settings";
 import Agendamentos from "./pages/advogado/Agendamentos";
+import ProcessManagement from "./pages/advogado/ProcessManagement";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +96,7 @@ const App = () => (
             <Route path="chat" element={<Chat />} />
             <Route path="settings" element={<AdvogadoSettings />} />
             <Route path="agendamentos" element={<Agendamentos />} />
+            <Route path="processos" element={<ProcessManagement />} />
           </Route>
           
           {/* Catch-all route */}
