@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import ResourcesDropdown from "./ResourcesDropdown";
 import { Button } from "@/components/ui/button";
@@ -33,7 +32,7 @@ const DesktopNavigation = ({ navLinks, language }: DesktopNavigationProps) => {
 
       <div className="ml-8">
         <Button variant="default" asChild className="bg-navy-500 hover:bg-navy-600">
-          <Link to="/portal">
+          <Link to="/login">
             {language === "pt" ? "Área do Cliente" : "Client Portal"}
           </Link>
         </Button>

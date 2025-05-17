@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -6,7 +5,7 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-to-r from-navy-500 to-navy-700 text-white overflow-hidden">
       {/* Background pattern */}
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=2070')] bg-cover bg-center opacity-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-navy-600/20 to-navy-800/20"></div>
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -64,12 +63,8 @@ const Hero = () => {
           </div>
           
           <div className="hidden lg:block relative">
-            <div className="relative rounded-xl overflow-hidden shadow-2xl animate-scale-in">
-              <img 
-                src="https://images.unsplash.com/photo-1521791055366-0d553381c47a?q=80&w=1000" 
-                alt="Advogados em reunião" 
-                className="w-full object-cover"
-              />
+            <div className="relative rounded-xl overflow-hidden shadow-2xl animate-scale-in bg-navy-600/50 h-[500px] flex items-center justify-center">
+              <p className="text-white/50 text-lg">Imagem do Hero</p>
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-navy-900/90 to-transparent p-6">
                 <div className="flex items-center gap-4">
                   <div className="h-14 w-14 rounded-full bg-gold-400 flex items-center justify-center text-navy-800 text-xl font-bold">

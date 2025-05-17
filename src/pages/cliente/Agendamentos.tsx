@@ -276,20 +276,20 @@ const Agendamentos = () => {
       const tabMatch = 
         activeTab === "todos" || 
         (activeTab === "hoje" && formatarData(agendamento.data) === formatarData(new Date().toISOString())) ||
-        (activeTab === "semana" && {
+        (activeTab === "semana" && (() => {
           const hoje = new Date();
           const fimSemana = new Date();
           fimSemana.setDate(hoje.getDate() + 7);
           const dataAgendamento = new Date(agendamento.data);
           return dataAgendamento >= hoje && dataAgendamento <= fimSemana;
-        }) ||
-        (activeTab === "mes" && {
+        })()) ||
+        (activeTab === "mes" && (() => {
           const hoje = new Date();
           const fimMes = new Date();
           fimMes.setMonth(hoje.getMonth() + 1);
           const dataAgendamento = new Date(agendamento.data);
           return dataAgendamento >= hoje && dataAgendamento <= fimMes;
-        });
+        })());
       
       return searchMatch && tipoMatch && statusMatch && tabMatch;
     })

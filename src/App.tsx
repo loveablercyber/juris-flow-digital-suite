@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -48,6 +47,10 @@ import AdvogadoSettings from "./pages/advogado/Settings";
 import Agendamentos from "./pages/advogado/Agendamentos";
 import ProcessManagement from "./pages/advogado/ProcessManagement";
 import Notificacoes from "./pages/advogado/Notificacoes";
+
+// Cliente pages
+import ClienteLogin from "./pages/cliente/Login";
+import ClienteRoutes from "./routes/ClienteRoutes";
 
 const queryClient = new QueryClient();
 
@@ -103,6 +106,10 @@ const App = () => (
             <Route path="processos" element={<ProcessManagement />} />
             <Route path="notificacoes" element={<Notificacoes />} />
           </Route>
+          
+          {/* Cliente Routes */}
+          <Route path="/login" element={<ClienteLogin />} />
+          <Route path="/cliente/*" element={<ClienteRoutes />} />
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />

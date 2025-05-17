@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { BookOpen, ScrollText, BookMarked, Mail, Video, Briefcase } from "lucide-react";
@@ -67,7 +66,7 @@ const MobileMenu = ({
           </Button>
         </div>
         <Button variant="default" asChild className="bg-navy-500 hover:bg-navy-600 mt-2">
-          <Link to="/portal" onClick={closeMobileMenu}>
+          <Link to="/login" onClick={closeMobileMenu}>
             {language === "pt" ? "Área do Cliente" : "Client Portal"}
           </Link>
         </Button>
