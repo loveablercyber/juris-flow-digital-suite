@@ -22,13 +22,21 @@ export const notificationService = {
   },
   
   getNotificationCount: (userType: NotificationUserType, userId: string): NotificationCount => {
-    const notifications = this.getNotifications(userType, userId);
-    const naoLidas = notifications.filter(n => !n.lida).length;
-    
-    return {
-      total: notifications.length,
-      naoLidas
-    };
+    try {
+      const notifications = this.getNotifications(userType, userId);
+      const naoLidas = notifications ? notifications.filter(n => !n.lida).length : 0;
+      
+      return {
+        total: notifications ? notifications.length : 0,
+        naoLidas
+      };
+    } catch (error) {
+      console.error("Error in getNotificationCount:", error);
+      return {
+        total: 0,
+        naoLidas: 0
+      };
+    }
   },
   
   markAsRead: (id: string): void => {

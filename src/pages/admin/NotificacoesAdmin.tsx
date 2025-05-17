@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,7 +72,7 @@ const NotificacoesAdmin = () => {
     
     // Reset destinatário when changing user type
     form.setValue("destinatarioId", undefined);
-  }, [tipoUsuarioSelecionado]);
+  }, [tipoUsuarioSelecionado, usuarios]);
   
   // Load users (in a real app, this would fetch from API)
   useEffect(() => {
@@ -81,7 +82,7 @@ const NotificacoesAdmin = () => {
 
   const onSubmit = (data: NotificationFormValues) => {
     try {
-      // Fix: Ensure all required fields are provided
+      // Create the notification with all required fields
       notificationService.createNotification({
         titulo: data.titulo,
         mensagem: data.mensagem,
@@ -103,6 +104,7 @@ const NotificacoesAdmin = () => {
         prioridade: "media"
       });
     } catch (error) {
+      console.error("Error creating notification:", error);
       toast({
         title: "Erro ao enviar notificação",
         description: "Ocorreu um erro ao enviar a notificação. Tente novamente.",

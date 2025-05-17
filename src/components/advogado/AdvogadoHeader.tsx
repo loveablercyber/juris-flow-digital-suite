@@ -14,7 +14,7 @@ const AdvogadoHeader = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   
   const userId = localStorage.getItem('advogadoUser') 
-    ? JSON.parse(localStorage.getItem('advogadoUser') || '{}').id || '' 
+    ? JSON.parse(localStorage.getItem('advogadoUser') || '{}').id || ''
     : '';
   
   useEffect(() => {
@@ -28,8 +28,16 @@ const AdvogadoHeader = () => {
   }, []);
   
   const updateNotificationCount = () => {
-    const count = notificationService.getNotificationCount("advogado", userId);
-    setNotificationCount(count.naoLidas);
+    try {
+      if (userId) {
+        const count = notificationService.getNotificationCount("advogado", userId);
+        setNotificationCount(count.naoLidas);
+      }
+    } catch (error) {
+      console.error("Error updating notification count:", error);
+      // Fallback to 0 notifications on error
+      setNotificationCount(0);
+    }
   };
   
   const toggleTheme = () => {

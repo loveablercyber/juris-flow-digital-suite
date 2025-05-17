@@ -14,7 +14,7 @@ const AdminHeader = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   
   const userId = localStorage.getItem('adminUser') 
-    ? JSON.parse(localStorage.getItem('adminUser') || '{}').id || '' 
+    ? JSON.parse(localStorage.getItem('adminUser') || '{}').id || ''
     : '';
   
   useEffect(() => {
@@ -28,8 +28,16 @@ const AdminHeader = () => {
   }, []);
   
   const updateNotificationCount = () => {
-    const count = notificationService.getNotificationCount("advogado", userId); // Admin gets advogado notifications too
-    setNotificationCount(count.naoLidas);
+    try {
+      if (userId) {
+        const count = notificationService.getNotificationCount("advogado", userId); // Admin gets advogado notifications too
+        setNotificationCount(count.naoLidas);
+      }
+    } catch (error) {
+      console.error("Error updating notification count:", error);
+      // Fallback to 0 notifications on error
+      setNotificationCount(0);
+    }
   };
   
   const toggleTheme = () => {
