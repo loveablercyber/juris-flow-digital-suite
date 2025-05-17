@@ -1,15 +1,36 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, Settings, User, LogOut, Sun, Moon, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
+import NotificationBell from "@/components/common/NotificationBell";
+import { notificationService } from "@/services/notificationService";
 
 const AdvogadoHeader = () => {
   const navigate = useNavigate();
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
-  const [notifications, setNotifications] = React.useState(3);
+  const [notificationCount, setNotificationCount] = useState(0);
+  
+  const userId = localStorage.getItem('advogadoUser') 
+    ? JSON.parse(localStorage.getItem('advogadoUser') || '{}').id || '' 
+    : '';
+  
+  useEffect(() => {
+    // Initial load of notifications
+    updateNotificationCount();
+    
+    // Set up interval to periodically check for new notifications
+    const interval = setInterval(updateNotificationCount, 30000); // Check every 30 seconds
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  const updateNotificationCount = () => {
+    const count = notificationService.getNotificationCount("advogado", userId);
+    setNotificationCount(count.naoLidas);
+  };
   
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -29,7 +50,7 @@ const AdvogadoHeader = () => {
     navigate("/advogado");
   };
 
-  const user = JSON.parse(localStorage.getItem("advogadoUser") || '{"name": "Dr. João Silva", "oab": "OAB/SP 123456"}');
+  const user = JSON.parse(localStorage.getItem("advogadoUser") || '{"name": "Dr. João Silva", "oab": "OAB/SP 123456", "id": "1"}');
 
   return (
     <header className="border-b bg-background py-3 px-4 md:px-6 flex items-center justify-between">
@@ -41,14 +62,7 @@ const AdvogadoHeader = () => {
           {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
         </Button>
         
-        <Button variant="outline" size="icon" className="relative">
-          <Bell className="h-4 w-4" />
-          {notifications > 0 && (
-            <span className="absolute top-0 right-0 h-4 w-4 text-xs bg-red-500 text-white rounded-full flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
-              {notifications}
-            </span>
-          )}
-        </Button>
+        <NotificationBell count={notificationCount} userType="advogado" />
         
         <Button variant="outline" size="icon" onClick={() => navigate("/advogado/chat")}>
           <MessageSquare className="h-4 w-4" />

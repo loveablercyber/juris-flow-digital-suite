@@ -12,7 +12,8 @@ import {
   MessageSquare,
   Settings,
   CalendarClock,
-  Briefcase
+  Briefcase,
+  Bell
 } from "lucide-react";
 import {
   Sidebar,
@@ -83,6 +84,11 @@ const AdvogadoSidebar = () => {
       icon: MessageSquare,
       label: "Chat",
       path: "/advogado/chat",
+    },
+    {
+      icon: Bell,
+      label: "Notificações",
+      path: "/advogado/notificacoes",
     },
     {
       icon: Settings,

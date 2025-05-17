@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -31,6 +32,7 @@ import SiteSettings from "./pages/admin/SiteSettings";
 import Statistics from "./pages/admin/Statistics";
 import EbooksManagement from "./pages/admin/EbooksManagement";
 import LogsActivity from "./pages/admin/LogsActivity";
+import NotificacoesAdmin from "./pages/admin/NotificacoesAdmin";
 
 // Advogado pages
 import AdvogadoLogin from "./pages/advogado/Login";
@@ -45,6 +47,7 @@ import Chat from "./pages/advogado/Chat";
 import AdvogadoSettings from "./pages/advogado/Settings";
 import Agendamentos from "./pages/advogado/Agendamentos";
 import ProcessManagement from "./pages/advogado/ProcessManagement";
+import Notificacoes from "./pages/advogado/Notificacoes";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +85,7 @@ const App = () => (
             <Route path="statistics" element={<Statistics />} />
             <Route path="ebooks" element={<EbooksManagement />} />
             <Route path="logs" element={<LogsActivity />} />
+            <Route path="notificacoes" element={<NotificacoesAdmin />} />
           </Route>
           
           {/* Advogado Routes */}
@@ -97,6 +101,7 @@ const App = () => (
             <Route path="settings" element={<AdvogadoSettings />} />
             <Route path="agendamentos" element={<Agendamentos />} />
             <Route path="processos" element={<ProcessManagement />} />
+            <Route path="notificacoes" element={<Notificacoes />} />
           </Route>
           
           {/* Catch-all route */}

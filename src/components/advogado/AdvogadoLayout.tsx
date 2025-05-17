@@ -4,6 +4,7 @@ import { useNavigate, Outlet } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import AdvogadoSidebar from "./AdvogadoSidebar";
 import AdvogadoHeader from "./AdvogadoHeader";
+import { createSystemNotifications } from "@/helpers/systemNotifications";
 
 const AdvogadoLayout = () => {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,9 @@ const AdvogadoLayout = () => {
       });
       navigate("/advogado");
     } else {
+      // Initialize the system with some notifications for demo purposes
+      createSystemNotifications();
+      
       setLoading(false);
     }
   }, [navigate]);

@@ -9,9 +9,9 @@ import {
   Shield,
   BarChart,
   Book,
-  File,
   Activity,
-  Image
+  Image,
+  Bell
 } from "lucide-react";
 import {
   Sidebar,
@@ -52,6 +52,11 @@ const AdminSidebar = () => {
       icon: Image,
       label: "Blog",
       path: "/admin/blog",
+    },
+    {
+      icon: Bell,
+      label: "Avisos & Notificações",
+      path: "/admin/notificacoes",
     },
     {
       icon: Settings,
