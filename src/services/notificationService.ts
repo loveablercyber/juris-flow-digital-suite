@@ -1,4 +1,3 @@
-
 import { Notification, NotificationCount, NotificationPriority, NotificationUserType } from "@/types/notification";
 
 // Simulating API calls with local storage for demo purposes
@@ -23,7 +22,7 @@ export const notificationService = {
   
   getNotificationCount: (userType: NotificationUserType, userId: string): NotificationCount => {
     try {
-      const notifications = this.getNotifications(userType, userId);
+      const notifications = this.getNotifications(userType, userId) || [];
       // Fix: Add null check with optional chaining or a default empty array
       const naoLidas = notifications.filter(n => !n.lida).length;
       
