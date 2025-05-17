@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -215,11 +216,11 @@ export default function ProcessManagement() {
     peritos: [""],
     observacoes: "",
     checklist: [{ item: "", concluido: false }],
-    prioridade: "baixa",
+    prioridade: "baixa" as 'baixa' | 'media' | 'alta' | 'urgente',
     emergenciaJuridica: false,
     tarefaVinculada: "",
     contratoDigital: "",
-    permissoes: [{ usuario: "", tipo: "visualizar" }],
+    permissoes: [{ usuario: "", tipo: "visualizar" as 'visualizar' | 'editar' }],
     integracoes: { esaj: false, projudi: false, pje: false },
   });
 
@@ -295,11 +296,11 @@ export default function ProcessManagement() {
       peritos: [""],
       observacoes: "",
       checklist: [{ item: "", concluido: false }],
-      prioridade: "baixa",
+      prioridade: "baixa" as 'baixa' | 'media' | 'alta' | 'urgente',
       emergenciaJuridica: false,
       tarefaVinculada: "",
       contratoDigital: "",
-      permissoes: [{ usuario: "", tipo: "visualizar" }],
+      permissoes: [{ usuario: "", tipo: "visualizar" as 'visualizar' | 'editar' }],
       integracoes: { esaj: false, projudi: false, pje: false },
     });
   };
@@ -862,11 +863,11 @@ export default function ProcessManagement() {
                 peritos: [""],
                 observacoes: "",
                 checklist: [{ item: "", concluido: false }],
-                prioridade: "baixa",
+                prioridade: "baixa" as 'baixa' | 'media' | 'alta' | 'urgente',
                 emergenciaJuridica: false,
                 tarefaVinculada: "",
                 contratoDigital: "",
-                permissoes: [{ usuario: "", tipo: "visualizar" }],
+                permissoes: [{ usuario: "", tipo: "visualizar" as 'visualizar' | 'editar' }],
                 integracoes: { esaj: false, projudi: false, pje: false },
               })}>
                 Limpar
@@ -917,8 +918,8 @@ export default function ProcessManagement() {
                         process.status === "Em andamento"
                           ? "default"
                           : process.status === "Concluído"
-                          ? "success"
-                          : "secondary"
+                          ? "secondary"
+                          : "outline"
                       }
                     >
                       {process.status}
