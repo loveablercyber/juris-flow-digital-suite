@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +16,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Combobox } from "@/components/ui/combobox";
 import { toast } from "@/hooks/use-toast";
 import { NotificationPriority, NotificationUserType } from "@/types/notification";
 
@@ -83,8 +81,14 @@ const NotificacoesAdmin = () => {
 
   const onSubmit = (data: NotificationFormValues) => {
     try {
+      // Fix: Ensure all required fields are provided
       notificationService.createNotification({
-        ...data,
+        titulo: data.titulo,
+        mensagem: data.mensagem,
+        tipoUsuario: data.tipoUsuario,
+        destinatarioId: data.destinatarioId,
+        prioridade: data.prioridade,
+        expiraEm: data.expiraEm
       });
       
       toast({
