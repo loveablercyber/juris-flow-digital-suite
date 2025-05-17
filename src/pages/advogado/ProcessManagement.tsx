@@ -33,7 +33,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Eye, Briefcase, FileText, Gavel, Users, MessageSquare } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface Process {
   // Informações Gerais
@@ -222,6 +223,11 @@ export default function ProcessManagement() {
     integracoes: { esaj: false, projudi: false, pje: false },
   });
 
+  const [selectedProcess, setSelectedProcess] = useState<Process | null>(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedProcess, setEditedProcess] = useState<Process | null>(null);
+
   const handleAddProcess = () => {
     const process: Process = {
       id: Math.random().toString(36).substr(2, 9),
@@ -304,6 +310,35 @@ export default function ProcessManagement() {
     )
   );
 
+  const handleViewDetails = (process: Process) => {
+    setSelectedProcess(process);
+    setEditedProcess({...process});
+    setIsEditMode(false);
+    setIsDetailDialogOpen(true);
+  };
+
+  const handleSave = () => {
+    if (editedProcess) {
+      const updatedProcesses = processes.map(p => 
+        p.id === editedProcess.id ? editedProcess : p
+      );
+      setProcesses(updatedProcesses);
+      setSelectedProcess(editedProcess);
+      setIsEditMode(false);
+      
+      toast({
+        title: "Processo atualizado",
+        description: `O processo ${editedProcess.numero} foi atualizado com sucesso.`,
+      });
+    }
+  };
+
+  const handleInputChange = (field: keyof Process, value: any) => {
+    if (editedProcess) {
+      setEditedProcess({ ...editedProcess, [field]: value });
+    }
+  };
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
@@ -316,14 +351,27 @@ export default function ProcessManagement() {
             <DialogHeader>
               <DialogTitle>Adicionar Novo Processo</DialogTitle>
             </DialogHeader>
+            
             <Tabs defaultValue="geral" className="w-full">
               <TabsList className="grid w-full grid-cols-6">
-                <TabsTrigger value="geral">📌 Geral</TabsTrigger>
-                <TabsTrigger value="judicial">🏛️ Judicial</TabsTrigger>
-                <TabsTrigger value="datas">🗓️ Datas</TabsTrigger>
-                <TabsTrigger value="documentos">📎 Documentos</TabsTrigger>
-                <TabsTrigger value="envolvidos">👥 Envolvidos</TabsTrigger>
-                <TabsTrigger value="observacoes">📝 Observações</TabsTrigger>
+                <TabsTrigger value="geral" className="flex items-center gap-1">
+                  <FileText className="h-4 w-4" /> Geral
+                </TabsTrigger>
+                <TabsTrigger value="judicial" className="flex items-center gap-1">
+                  <Gavel className="h-4 w-4" /> Judicial
+                </TabsTrigger>
+                <TabsTrigger value="datas" className="flex items-center gap-1">
+                  <CalendarIcon className="h-4 w-4" /> Datas
+                </TabsTrigger>
+                <TabsTrigger value="documentos" className="flex items-center gap-1">
+                  <FileText className="h-4 w-4" /> Documentos
+                </TabsTrigger>
+                <TabsTrigger value="envolvidos" className="flex items-center gap-1">
+                  <Users className="h-4 w-4" /> Envolvidos
+                </TabsTrigger>
+                <TabsTrigger value="observacoes" className="flex items-center gap-1">
+                  <MessageSquare className="h-4 w-4" /> Observações
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="geral" className="space-y-4 mt-4">
@@ -879,7 +927,13 @@ export default function ProcessManagement() {
                   <TableCell>{process.dataAbertura}</TableCell>
                   <TableCell>{process.ultimaAtualizacao}</TableCell>
                   <TableCell>
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => handleViewDetails(process)}
+                      className="flex items-center gap-1"
+                    >
+                      <Eye className="h-4 w-4" />
                       Detalhes
                     </Button>
                   </TableCell>
@@ -889,6 +943,484 @@ export default function ProcessManagement() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Process Details Dialog */}
+      <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isEditMode ? "Editar Processo" : "Detalhes do Processo"}</DialogTitle>
+          </DialogHeader>
+
+          {selectedProcess && (
+            <Tabs defaultValue="geral" className="w-full">
+              <TabsList className="grid w-full grid-cols-6">
+                <TabsTrigger value="geral" className="flex items-center gap-1">
+                  <FileText className="h-4 w-4" /> Geral
+                </TabsTrigger>
+                <TabsTrigger value="judicial" className="flex items-center gap-1">
+                  <Gavel className="h-4 w-4" /> Judicial
+                </TabsTrigger>
+                <TabsTrigger value="datas" className="flex items-center gap-1">
+                  <CalendarIcon className="h-4 w-4" /> Datas
+                </TabsTrigger>
+                <TabsTrigger value="documentos" className="flex items-center gap-1">
+                  <FileText className="h-4 w-4" /> Documentos
+                </TabsTrigger>
+                <TabsTrigger value="envolvidos" className="flex items-center gap-1">
+                  <Users className="h-4 w-4" /> Envolvidos
+                </TabsTrigger>
+                <TabsTrigger value="observacoes" className="flex items-center gap-1">
+                  <MessageSquare className="h-4 w-4" /> Observações
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="geral" className="space-y-4 mt-4">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="numero" className="font-semibold">Número do Processo</Label>
+                    <Input
+                      id="numero"
+                      value={editedProcess?.numero || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("numero", e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="tipo" className="font-semibold">Tipo de Processo</Label>
+                    <Input
+                      id="tipo"
+                      value={editedProcess?.tipo || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("tipo", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="areaDireito" className="font-semibold">Área do Direito</Label>
+                    <Input
+                      id="areaDireito"
+                      value={editedProcess?.areaDireito || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("areaDireito", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="descricao" className="font-semibold">Descrição Resumida</Label>
+                    <Textarea
+                      id="descricao"
+                      value={editedProcess?.descricao || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("descricao", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="clientes" className="font-semibold">Cliente(s)</Label>
+                    <Input
+                      id="clientes"
+                      value={(editedProcess?.clientes || []).join(", ")}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("clientes", e.target.value.split(", "))}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="parteContraria" className="font-semibold">Parte Contrária</Label>
+                    <Input
+                      id="parteContraria"
+                      value={editedProcess?.parteContraria || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("parteContraria", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="advogadosResponsaveis" className="font-semibold">Advogado(s) Responsável(eis)</Label>
+                    <Input
+                      id="advogadosResponsaveis"
+                      value={(editedProcess?.advogadosResponsaveis || []).join(", ")}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("advogadosResponsaveis", e.target.value.split(", "))}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="judicial" className="space-y-4 mt-4">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="tribunal" className="font-semibold">Tribunal</Label>
+                    <Input
+                      id="tribunal"
+                      value={editedProcess?.tribunal || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("tribunal", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="estado" className="font-semibold">Estado</Label>
+                      <Input
+                        id="estado"
+                        value={editedProcess?.estado || ""}
+                        disabled={!isEditMode}
+                        onChange={(e) => handleInputChange("estado", e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="cidade" className="font-semibold">Cidade</Label>
+                      <Input
+                        id="cidade"
+                        value={editedProcess?.cidade || ""}
+                        disabled={!isEditMode}
+                        onChange={(e) => handleInputChange("cidade", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="varaComarca" className="font-semibold">Vara/Comarca</Label>
+                    <Input
+                      id="varaComarca"
+                      value={editedProcess?.varaComarca || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("varaComarca", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="numeroOAB" className="font-semibold">Número OAB</Label>
+                    <Input
+                      id="numeroOAB"
+                      value={editedProcess?.numeroOAB || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("numeroOAB", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="juizRelator" className="font-semibold">Juiz/Relator</Label>
+                    <Input
+                      id="juizRelator"
+                      value={editedProcess?.juizRelator || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("juizRelator", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="instancia" className="font-semibold">Instância</Label>
+                    <Input
+                      id="instancia"
+                      value={editedProcess?.instancia || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("instancia", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="classeProcessual" className="font-semibold">Classe Processual</Label>
+                    <Input
+                      id="classeProcessual"
+                      value={editedProcess?.classeProcessual || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("classeProcessual", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="status" className="font-semibold">Status</Label>
+                    {isEditMode ? (
+                      <Select
+                        value={editedProcess?.status}
+                        onValueChange={(value) => handleInputChange("status", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Novo">Novo</SelectItem>
+                          <SelectItem value="Em andamento">Em andamento</SelectItem>
+                          <SelectItem value="Concluído">Concluído</SelectItem>
+                          <SelectItem value="Arquivado">Arquivado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        id="status"
+                        value={editedProcess?.status || ""}
+                        disabled={true}
+                      />
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="datas" className="space-y-4 mt-4">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="dataAbertura" className="font-semibold">Data de Abertura</Label>
+                    <Input
+                      id="dataAbertura"
+                      type="date"
+                      value={editedProcess?.dataAbertura || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("dataAbertura", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="ultimaAtualizacao" className="font-semibold">Última Atualização</Label>
+                    <Input
+                      id="ultimaAtualizacao"
+                      type="date"
+                      value={editedProcess?.ultimaAtualizacao || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("ultimaAtualizacao", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="dataDistribuicao" className="font-semibold">Data de Distribuição</Label>
+                    <Input
+                      id="dataDistribuicao"
+                      type="date"
+                      value={editedProcess?.dataDistribuicao || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("dataDistribuicao", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="dataProximaAudiencia" className="font-semibold">Data Próxima Audiência</Label>
+                    <Input
+                      id="dataProximaAudiencia"
+                      type="date"
+                      value={editedProcess?.dataProximaAudiencia || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("dataProximaAudiencia", e.target.value)}
+                    />
+                  </div>
+
+                  {editedProcess?.prazosVencimentos && editedProcess.prazosVencimentos.length > 0 && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-semibold mb-2">Prazos e Vencimentos</h3>
+                      <div className="space-y-2">
+                        {editedProcess.prazosVencimentos.map((prazo, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <span className="text-sm">{prazo.data}: {prazo.descricao}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="documentos" className="space-y-4 mt-4">
+                {editedProcess?.documentos && editedProcess.documentos.length > 0 ? (
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">Documentos do Processo</h3>
+                    <div className="space-y-4">
+                      {editedProcess.documentos.map((doc, index) => (
+                        <div key={index} className="grid gap-2 border-b pb-2">
+                          <div className="flex justify-between">
+                            <p className="font-medium">{doc.tipo}</p>
+                            <Badge variant="outline">{doc.arquivo}</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{doc.descricao}</p>
+                          {doc.tags && doc.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {doc.tags.map((tag, tagIndex) => (
+                                <Badge key={tagIndex} variant="secondary" className="text-xs">{tag}</Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center p-4 text-muted-foreground">
+                    Nenhum documento registrado para este processo.
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="envolvidos" className="space-y-4 mt-4">
+                <div className="grid gap-6">
+                  {editedProcess?.partes && editedProcess.partes.length > 0 && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-semibold mb-2">Partes do Processo</h3>
+                      <div className="space-y-2">
+                        {editedProcess.partes.map((parte, index) => (
+                          <div key={index} className="grid grid-cols-3 gap-2 border-b pb-2">
+                            <span className="font-medium">{parte.tipo}</span>
+                            <span>{parte.nome}</span>
+                            <span className="text-muted-foreground">{parte.papel}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {editedProcess?.testemunhas && editedProcess.testemunhas.length > 0 && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-semibold mb-2">Testemunhas</h3>
+                      <div className="space-y-2">
+                        {editedProcess.testemunhas.map((testemunha, index) => (
+                          <div key={index} className="grid grid-cols-2 gap-2 border-b pb-2">
+                            <span className="font-medium">{testemunha.nome}</span>
+                            <span className="text-muted-foreground">{testemunha.contato}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {editedProcess?.peritos && editedProcess.peritos.length > 0 && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-semibold mb-2">Peritos</h3>
+                      <div className="space-y-2">
+                        {editedProcess.peritos.map((perito, index) => (
+                          <div key={index} className="border-b pb-2">
+                            <span className="font-medium">{perito}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(!editedProcess?.partes || editedProcess?.partes.length === 0) && 
+                   (!editedProcess?.testemunhas || editedProcess?.testemunhas.length === 0) && 
+                   (!editedProcess?.peritos || editedProcess?.peritos.length === 0) && (
+                    <div className="text-center p-4 text-muted-foreground">
+                      Nenhum envolvido registrado para este processo.
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="observacoes" className="space-y-4 mt-4">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="observacoes" className="font-semibold">Observações Internas</Label>
+                    <Textarea
+                      id="observacoes"
+                      value={editedProcess?.observacoes || ""}
+                      disabled={!isEditMode}
+                      onChange={(e) => handleInputChange("observacoes", e.target.value)}
+                      rows={4}
+                    />
+                  </div>
+
+                  {editedProcess?.checklist && editedProcess.checklist.length > 0 && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="font-semibold mb-2">Checklist</h3>
+                      <div className="space-y-2">
+                        {editedProcess.checklist.map((item, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <input 
+                              type="checkbox" 
+                              checked={item.concluido} 
+                              disabled={!isEditMode}
+                              onChange={() => {
+                                if (isEditMode && editedProcess) {
+                                  const updatedChecklist = [...editedProcess.checklist];
+                                  updatedChecklist[index] = { 
+                                    ...item, 
+                                    concluido: !item.concluido 
+                                  };
+                                  handleInputChange("checklist", updatedChecklist);
+                                }
+                              }}
+                              className="h-4 w-4"
+                            />
+                            <span>{item.item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="prioridade" className="font-semibold">Nível de Prioridade</Label>
+                    {isEditMode ? (
+                      <Select 
+                        value={editedProcess?.prioridade}
+                        onValueChange={(value: 'baixa' | 'media' | 'alta' | 'urgente') => handleInputChange("prioridade", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a prioridade" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="baixa">Baixa</SelectItem>
+                          <SelectItem value="media">Média</SelectItem>
+                          <SelectItem value="alta">Alta</SelectItem>
+                          <SelectItem value="urgente">Urgente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div>
+                        <Badge 
+                          className={cn(
+                            editedProcess?.prioridade === 'baixa' ? "bg-green-100 text-green-800" :
+                            editedProcess?.prioridade === 'media' ? "bg-yellow-100 text-yellow-800" :
+                            editedProcess?.prioridade === 'alta' ? "bg-orange-100 text-orange-800" :
+                            "bg-red-100 text-red-800"
+                          )}
+                        >
+                          {editedProcess?.prioridade === 'baixa' ? "Baixa" :
+                            editedProcess?.prioridade === 'media' ? "Média" :
+                            editedProcess?.prioridade === 'alta' ? "Alta" :
+                            "Urgente"}
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="emergenciaJuridica" className="font-semibold">Emergência Jurídica</Label>
+                    <div className="flex items-center">
+                      <input 
+                        type="checkbox"
+                        id="emergenciaJuridica"
+                        checked={editedProcess?.emergenciaJuridica || false}
+                        disabled={!isEditMode}
+                        onChange={(e) => handleInputChange("emergenciaJuridica", e.target.checked)}
+                        className="h-4 w-4 mr-2"
+                      />
+                      <span>Caso requer atenção imediata</span>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          )}
+
+          <DialogFooter>
+            {isEditMode ? (
+              <>
+                <Button variant="outline" onClick={() => setIsEditMode(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSave}>Salvar Alterações</Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => setIsDetailDialogOpen(false)}>
+                  Fechar
+                </Button>
+                <Button onClick={() => setIsEditMode(true)}>Editar</Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Sun, Moon, Globe, Menu, X, BookOpen, ScrollText, BookMarked, Mail, Video } from "lucide-react";
+import { Sun, Moon, Globe, Menu, X, BookOpen, ScrollText, BookMarked, Mail, Video, Briefcase } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Header = () => {
@@ -56,6 +57,7 @@ const Header = () => {
     { name: language === "pt" ? "Home" : "Home", path: "/" },
     { name: language === "pt" ? "Quem Somos" : "About Us", path: "/quem-somos" },
     { name: language === "pt" ? "Áreas de Atuação" : "Practice Areas", path: "/areas-de-atuacao" },
+    { name: language === "pt" ? "Processos" : "Cases", path: "/advogado/process-management", icon: <Briefcase className="mr-2 h-4 w-4" /> },
     { name: language === "pt" ? "Blog" : "Blog", path: "/blog" },
     { name: language === "pt" ? "Atendimento" : "Contact", path: "/atendimento" },
   ];
@@ -87,8 +89,9 @@ const Header = () => {
             <Link
               key={link.path}
               to={link.path}
-              className="font-medium hover:text-primary transition-colors"
+              className="font-medium hover:text-primary transition-colors flex items-center"
             >
+              {link.icon}
               {link.name}
             </Link>
           ))}
@@ -177,9 +180,10 @@ const Header = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className="font-medium py-2 hover:text-primary transition-colors"
+                className="font-medium py-2 hover:text-primary transition-colors flex items-center"
                 onClick={() => setMobileMenuOpen(false)}
               >
+                {link.icon}
                 {link.name}
               </Link>
             ))}
