@@ -24,10 +24,11 @@ export const notificationService = {
   getNotificationCount: (userType: NotificationUserType, userId: string): NotificationCount => {
     try {
       const notifications = this.getNotifications(userType, userId);
-      const naoLidas = notifications ? notifications.filter(n => !n.lida).length : 0;
+      // Fix: Add null check with optional chaining or a default empty array
+      const naoLidas = notifications.filter(n => !n.lida).length;
       
       return {
-        total: notifications ? notifications.length : 0,
+        total: notifications.length,
         naoLidas
       };
     } catch (error) {
