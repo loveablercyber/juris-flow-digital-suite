@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,11 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 const blogPosts = [
   {
     id: 1,
-    title: "Reforma trabalhista: Principais impactos para empregados e empregadores",
-    excerpt: "Conheça as principais mudanças trazidas pela reforma e como elas afetam os direitos e deveres nas relações de trabalho.",
-    date: "12 Abr 2023",
-    category: "Direito Trabalhista",
-    image: "https://images.unsplash.com/photo-1521791055366-0d553381c47a?w=500&h=300&fit=crop"
+    title: "Direitos do Consumidor: O que você precisa saber",
+    excerpt: "Entenda seus direitos como consumidor e como exercê-los em diferentes situações.",
+    date: "15 de Março, 2024",
+    author: "Dra. Ana Silva",
+    category: "Direito do Consumidor",
+    image: "bg-gradient-to-br from-navy-600/50 to-navy-800/50"
   },
   {
     id: 2,

@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
-import { File, FileIcon, FileImage, FileText } from "lucide-react";
+import { File, FileImage, FileText } from "lucide-react";
 
 interface Document {
   id: string;
@@ -157,7 +156,7 @@ export const useDocumentManager = () => {
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'pdf':
-        return <FileIcon className="h-5 w-5 text-red-500" />;
+        return <FileText className="h-5 w-5 text-red-500" />;
       case 'docx':
       case 'word':
         return <FileText className="h-5 w-5 text-blue-500" />;

@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Link } from "react-router-dom";
 
 const Pagamentos = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -307,6 +308,11 @@ const Pagamentos = () => {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to={`/cliente/cobrancas/${pagamento.id}`}>
+                        Detalhes
+                      </Link>
+                    </Button>
                     <Button variant="ghost" size="icon">
                       <Download className="h-4 w-4" />
                     </Button>

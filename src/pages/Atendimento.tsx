@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
@@ -57,7 +56,7 @@ const Atendimento = () => {
       <main className="flex-grow pt-16">
         {/* Hero Section */}
         <section className="relative py-24 bg-navy-500 text-white overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1521791055366-0d553381c47a?q=80&w=1000')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-500 to-navy-700"></div>
           <div className="container mx-auto px-4 relative z-10 text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               Atendimento <span className="text-gold-400">Jurídico</span>

@@ -263,8 +263,8 @@ const ClienteLayout = () => {
                     </div>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="justify-center text-blue-600">
-                    Ver todas as notificações
+                  <DropdownMenuItem className="justify-center text-blue-600" asChild>
+                    <Link to="/cliente/mensagens">Ver todas as notificações</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

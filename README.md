@@ -71,3 +71,84 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+# Juris Flow Digital Suite
+
+Sistema de gestão para escritórios de advocacia.
+
+## Configuração do Banco de Dados
+
+O sistema utiliza o Supabase como banco de dados PostgreSQL e o Prisma como ORM.
+
+### Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```
+DATABASE_URL="postgresql://postgres:wyonzomnplhgqnfsuphg@db.wyonzomnplhgqnfsuphg.supabase.co:5432/postgres"
+SUPABASE_URL="https://wyonzomnplhgqnfsuphg.supabase.co"
+SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5b256b21ucGxoZ3FuZnN1cGhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MjQ3NDAsImV4cCI6MjA2MzEwMDc0MH0.crW6qYg2kAktHHrhD3PREwGpfUwNgjB90AdKt75wDFw"
+JWT_SECRET="juris-flow-digital-suite-secret-key"
+JWT_EXPIRES_IN="7d"
+```
+
+### Comandos Disponíveis
+
+- `npm run prisma:generate`: Gera o cliente Prisma
+- `npm run prisma:migrate`: Executa as migrações do banco de dados
+- `npm run prisma:studio`: Abre o Prisma Studio para visualizar e editar os dados
+- `npm run db:init`: Inicializa o banco de dados com dados de exemplo
+
+### Estrutura do Banco de Dados
+
+O banco de dados possui os seguintes modelos:
+
+- **User**: Usuários do sistema (admin, advogado, cliente)
+- **Process**: Processos jurídicos
+- **Document**: Documentos relacionados aos processos
+- **Appointment**: Compromissos e audiências
+- **Payment**: Pagamentos e honorários
+- **Task**: Tarefas relacionadas aos processos
+- **Note**: Notas e observações
+- **Message**: Mensagens entre usuários
+- **Attendance**: Atendimentos realizados
+- **Notification**: Notificações do sistema
+
+### Dados de Exemplo
+
+O sistema é inicializado com os seguintes dados de exemplo:
+
+- **Usuários**:
+  - Admin: admin@jurisflow.com / admin123
+  - Advogado: advogado@jurisflow.com / advogado123
+  - Cliente: cliente@jurisflow.com / cliente123
+
+- **Processos**:
+  - Processo de Divórcio (PROC-2023-001)
+  - Processo Trabalhista (PROC-2023-002)
+
+## Desenvolvimento
+
+### Instalação
+
+```bash
+npm install
+```
+
+### Executando o Projeto
+
+```bash
+npm run dev
+```
+
+### Construindo o Projeto
+
+```bash
+npm run build
+```
+
+### Executando o Projeto em Produção
+
+```bash
+npm run start
+```

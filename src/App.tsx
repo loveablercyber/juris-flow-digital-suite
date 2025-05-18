@@ -47,6 +47,8 @@ import AdvogadoSettings from "./pages/advogado/Settings";
 import Agendamentos from "./pages/advogado/Agendamentos";
 import ProcessManagement from "./pages/advogado/ProcessManagement";
 import Notificacoes from "./pages/advogado/Notificacoes";
+import Pagamentos from "./pages/advogado/Pagamentos";
+import CobrancaDetalhes from "./pages/advogado/CobrancaDetalhes";
 
 // Cliente pages
 import ClienteLogin from "./pages/cliente/Login";
@@ -105,6 +107,8 @@ const App = () => (
             <Route path="agendamentos" element={<Agendamentos />} />
             <Route path="processos" element={<ProcessManagement />} />
             <Route path="notificacoes" element={<Notificacoes />} />
+            <Route path="pagamentos" element={<Pagamentos />} />
+            <Route path="cobrancas/:id" element={<CobrancaDetalhes />} />
           </Route>
           
           {/* Cliente Routes */}

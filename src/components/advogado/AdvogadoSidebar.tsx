@@ -1,135 +1,113 @@
-
-import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   Calendar,
   FileText,
-  Upload,
-  CheckSquare,
-  FileEdit,
-  Send,
-  MessageSquare,
+  Users,
   Settings,
-  CalendarClock,
-  Briefcase,
-  Bell
+  CreditCard,
+  LogOut,
+  Menu,
+  X
 } from "lucide-react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
-  SidebarTrigger
-} from "@/components/ui/sidebar";
 
 const AdvogadoSidebar = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
-  
-  // Helper function to check if a path is active
-  const isActive = (path: string) => {
-    if (path === '/advogado/dashboard' && location.pathname === '/advogado/dashboard') {
-      return true;
-    }
-    return location.pathname.startsWith(path) && path !== '/advogado/dashboard';
-  };
-  
+
   const menuItems = [
     {
-      icon: LayoutDashboard,
-      label: "Dashboard",
-      path: "/advogado/dashboard",
+      title: "Dashboard",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      path: "/advogado/dashboard"
     },
     {
-      icon: Briefcase,
-      label: "Processos",
-      path: "/advogado/processos",
+      title: "Processos",
+      icon: <FileText className="h-5 w-5" />,
+      path: "/advogado/processos"
     },
     {
-      icon: Calendar,
-      label: "Calendário",
-      path: "/advogado/calendario",
+      title: "Agenda",
+      icon: <Calendar className="h-5 w-5" />,
+      path: "/advogado/agenda"
     },
     {
-      icon: CalendarClock,
-      label: "Agendamentos",
-      path: "/advogado/agendamentos",
+      title: "Clientes",
+      icon: <Users className="h-5 w-5" />,
+      path: "/advogado/clientes"
     },
     {
-      icon: FileText,
-      label: "Documentos",
-      path: "/advogado/documentos",
+      title: "Documentos",
+      icon: <FileText className="h-5 w-5" />,
+      path: "/advogado/documentos"
     },
     {
-      icon: CheckSquare,
-      label: "Tarefas",
-      path: "/advogado/tarefas",
+      title: "Pagamentos",
+      icon: <CreditCard className="h-5 w-5" />,
+      path: "/advogado/pagamentos"
     },
     {
-      icon: Send,
-      label: "Propostas",
-      path: "/advogado/propostas",
-    },
-    {
-      icon: FileEdit,
-      label: "Blog",
-      path: "/advogado/blog",
-    },
-    {
-      icon: MessageSquare,
-      label: "Chat",
-      path: "/advogado/chat",
-    },
-    {
-      icon: Bell,
-      label: "Notificações",
-      path: "/advogado/notificacoes",
-    },
-    {
-      icon: Settings,
-      label: "Configurações",
-      path: "/advogado/settings",
-    },
+      title: "Configurações",
+      icon: <Settings className="h-5 w-5" />,
+      path: "/advogado/configuracoes"
+    }
   ];
-  
+
   return (
-    <SidebarProvider>
-      <Sidebar 
-        className="border-r h-screen" 
-        data-side="left"
-        collapsible="icon"
-        variant="sidebar"
-      >
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {menuItems.map((item) => (
-                  <SidebarMenuItem key={item.path}>
-                    <SidebarMenuButton 
-                      asChild 
-                      isActive={isActive(item.path)}
-                    >
-                      <NavLink to={item.path} className="flex items-center">
-                        <item.icon className="mr-2 h-4 w-4" />
-                        <span>{item.label}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarTrigger className="absolute right-[-12px] top-6" />
-      </Sidebar>
-    </SidebarProvider>
+    <div
+      className={cn(
+        "h-screen bg-white border-r transition-all duration-300",
+        isCollapsed ? "w-20" : "w-64"
+      )}
+    >
+      <div className="flex items-center justify-between p-4 border-b">
+        {!isCollapsed && (
+          <h1 className="text-xl font-bold text-primary">JurisFlow</h1>
+        )}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+        >
+          {isCollapsed ? (
+            <Menu className="h-5 w-5" />
+          ) : (
+            <X className="h-5 w-5" />
+          )}
+        </Button>
+      </div>
+
+      <nav className="p-4 space-y-2">
+        {menuItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
+              location.pathname === item.path
+                ? "bg-primary text-white"
+                : "hover:bg-gray-100"
+            )}
+          >
+            {item.icon}
+            {!isCollapsed && <span>{item.title}</span>}
+          </Link>
+        ))}
+      </nav>
+
+      <div className="absolute bottom-0 w-full p-4 border-t">
+        <Button
+          variant="ghost"
+          className="w-full flex items-center gap-3 justify-start"
+        >
+          <LogOut className="h-5 w-5" />
+          {!isCollapsed && <span>Sair</span>}
+        </Button>
+      </div>
+    </div>
   );
 };
 

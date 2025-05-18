@@ -416,13 +416,10 @@ const Processos = () => {
                   <TableCell>{formatarData(processo.ultimaAtualizacao)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" asChild>
+                      <Button variant="outline" size="sm" asChild>
                         <Link to={`/cliente/processos/${processo.id}`}>
-                          <FileText className="h-4 w-4" />
+                          Detalhes
                         </Link>
-                      </Button>
-                      <Button variant="ghost" size="icon">
-                        <Upload className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>
