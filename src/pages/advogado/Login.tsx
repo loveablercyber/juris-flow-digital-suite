@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,8 @@ const AdvogadoLogin = () => {
         name: "Dr. João Silva",
         role: "advogado",
         oab: "OAB/SP 123456",
-        area: "Direito Civil"
+        area: "Direito Civil",
+        whatsappNumber: "5511999999999"
       }));
       
       toast({
