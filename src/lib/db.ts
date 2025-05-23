@@ -1,4 +1,18 @@
-import prisma from './prisma';
+import { PrismaClient } from '@prisma/client';
+import { Process, Client, Document, Payment, Task, Note, Appointment } from '@/types/database';
+
+const prisma = new PrismaClient();
+
+// Verifica se estamos no ambiente do navegador
+const isBrowser = typeof window !== 'undefined';
+
+// Função para verificar se o Prisma está disponível
+const checkPrisma = () => {
+  if (isBrowser) {
+    throw new Error('Prisma não pode ser usado no navegador. Use a API em vez disso.');
+  }
+  return prisma;
+};
 
 // Serviço para gerenciar usuários
 export const userService = {
@@ -9,7 +23,8 @@ export const userService = {
     password: string;
     role: 'ADMIN' | 'ADVOGADO' | 'CLIENTE';
   }) {
-    return prisma.user.create({
+    const db = checkPrisma();
+    return db.user.create({
       data: {
         ...data,
         profile: {
@@ -24,7 +39,8 @@ export const userService = {
 
   // Buscar usuário por email
   async findByEmail(email: string) {
-    return prisma.user.findUnique({
+    const db = checkPrisma();
+    return db.user.findUnique({
       where: { email },
       include: {
         profile: true
@@ -34,7 +50,8 @@ export const userService = {
 
   // Buscar usuário por ID
   async findById(id: string) {
-    return prisma.user.findUnique({
+    const db = checkPrisma();
+    return db.user.findUnique({
       where: { id },
       include: {
         profile: true
@@ -44,19 +61,109 @@ export const userService = {
 
   // Atualizar usuário
   async updateUser(id: string, data: any) {
-    return prisma.user.update({
+    const db = checkPrisma();
+    return db.user.update({
       where: { id },
       data,
       include: {
         profile: true
       }
     });
+  },
+
+  // Buscar advogados online (limitado a N)
+  async findOnlineLawyers(limit: number) {
+    const db = checkPrisma();
+    return db.user.findMany({
+      where: {
+        role: 'ADVOGADO',
+        isOnline: true
+      },
+      take: limit,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        photoUrl: true,
+        whatsappNumber: true,
+        isOnline: true
+      }
+    });
+  }
+};
+
+// Serviço para gerenciar clientes
+export const clientService = {
+  async listByUser(userId: string): Promise<Client[]> {
+    const db = checkPrisma();
+    return db.client.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' }
+    });
+  },
+
+  async findById(id: string): Promise<Client | null> {
+    const db = checkPrisma();
+    return db.client.findUnique({
+      where: { id }
+    });
+  },
+
+  async createClient(data: {
+    name: string;
+    email: string;
+    phone: string;
+    cpf: string;
+    status: 'active' | 'inactive';
+    userId: string;
+  }): Promise<Client> {
+    const db = checkPrisma();
+    return db.client.create({
+      data: {
+        ...data,
+        user: {
+          connect: { id: data.userId }
+        }
+      }
+    });
+  },
+
+  async updateClient(id: string, data: Partial<Client>): Promise<Client> {
+    const db = checkPrisma();
+    return db.client.update({
+      where: { id },
+      data,
+      include: {
+        user: true
+      }
+    });
+  },
+
+  async deleteClient(id: string): Promise<void> {
+    const db = checkPrisma();
+    await db.client.delete({
+      where: { id }
+    });
   }
 };
 
 // Serviço para gerenciar processos
 export const processService = {
-  // Criar um novo processo
+  async listByUser(userId: string): Promise<Process[]> {
+    const db = checkPrisma();
+    return db.process.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' }
+    });
+  },
+
+  async findById(id: string): Promise<Process | null> {
+    const db = checkPrisma();
+    return db.process.findUnique({
+      where: { id }
+    });
+  },
+
   async createProcess(data: {
     number: string;
     title: string;
@@ -73,81 +180,45 @@ export const processService = {
     nextHearing?: Date;
     distributionDate?: Date;
     userId: string;
-  }) {
-    return prisma.process.create({
+    clientId?: string;
+  }): Promise<Process> {
+    const db = checkPrisma();
+    return db.process.create({
       data: {
         ...data,
-        users: {
-          connect: { id: data.userId }
-        }
-      },
-      include: {
-        users: true,
-        documents: true,
-        appointments: true,
-        payments: true,
-        tasks: true,
-        notes: true
+        status: data.status || 'AGUARDANDO',
+        priority: data.priority || 'MEDIA',
+        emergency: data.emergency || false
       }
     });
   },
 
-  // Buscar processo por ID
-  async findById(id: string) {
-    return prisma.process.findUnique({
+  async updateProcess(id: string, data: Partial<Process>): Promise<Process> {
+    const db = checkPrisma();
+    return db.process.update({
       where: { id },
-      include: {
-        users: true,
-        documents: true,
-        appointments: true,
-        payments: true,
-        tasks: true,
-        notes: true
-      }
-    });
-  },
-
-  // Listar processos de um usuário
-  async listByUser(userId: string) {
-    return prisma.process.findMany({
-      where: {
-        users: {
-          some: {
-            id: userId
-          }
-        }
-      },
-      include: {
-        users: true,
-        documents: true,
-        appointments: true,
-        payments: true,
-        tasks: true,
-        notes: true
-      }
-    });
-  },
-
-  // Atualizar processo
-  async updateProcess(id: string, data: any) {
-    return prisma.process.update({
-      where: { id },
-      data,
-      include: {
-        users: true,
-        documents: true,
-        appointments: true,
-        payments: true,
-        tasks: true,
-        notes: true
-      }
+      data
     });
   }
 };
 
 // Serviço para gerenciar documentos
 export const documentService = {
-  // Criar um novo documento
+  async listByProcess(processId: string): Promise<Document[]> {
+    const db = checkPrisma();
+    return db.document.findMany({
+      where: { processId },
+      orderBy: { createdAt: 'desc' }
+    });
+  },
+
+  async findById(id: string): Promise<Document | null> {
+    const db = checkPrisma();
+    return db.document.findUnique({
+      where: { id }
+    });
+  },
+
   async createDocument(data: {
     name: string;
     type: string;
@@ -156,89 +227,31 @@ export const documentService = {
     tags: string[];
     userId: string;
     processId?: string;
-  }) {
-    return prisma.document.create({
-      data,
-      include: {
-        user: true,
-        process: true
-      }
-    });
-  },
-
-  // Buscar documento por ID
-  async findById(id: string) {
-    return prisma.document.findUnique({
-      where: { id },
-      include: {
-        user: true,
-        process: true
-      }
-    });
-  },
-
-  // Listar documentos de um processo
-  async listByProcess(processId: string) {
-    return prisma.document.findMany({
-      where: { processId },
-      include: {
-        user: true,
-        process: true
-      }
-    });
-  }
-};
-
-// Serviço para gerenciar agendamentos
-export const appointmentService = {
-  // Criar um novo agendamento
-  async createAppointment(data: {
-    title: string;
-    description?: string;
-    type: 'PRESENCIAL' | 'VIDEO' | 'TELEFONE';
-    status?: 'AGENDADO' | 'CONCLUIDO' | 'CANCELADO' | 'REMARCADO';
-    startTime: Date;
-    endTime: Date;
-    location?: string;
-    link?: string;
-    userId: string;
-    processId?: string;
-  }) {
-    return prisma.appointment.create({
-      data,
-      include: {
-        user: true,
-        process: true
-      }
-    });
-  },
-
-  // Buscar agendamento por ID
-  async findById(id: string) {
-    return prisma.appointment.findUnique({
-      where: { id },
-      include: {
-        user: true,
-        process: true
-      }
-    });
-  },
-
-  // Listar agendamentos de um usuário
-  async listByUser(userId: string) {
-    return prisma.appointment.findMany({
-      where: { userId },
-      include: {
-        user: true,
-        process: true
-      }
+  }): Promise<Document> {
+    const db = checkPrisma();
+    return db.document.create({
+      data
     });
   }
 };
 
 // Serviço para gerenciar pagamentos
 export const paymentService = {
-  // Criar um novo pagamento
+  async listByProcess(processId: string): Promise<Payment[]> {
+    const db = checkPrisma();
+    return db.payment.findMany({
+      where: { processId },
+      orderBy: { dueDate: 'asc' }
+    });
+  },
+
+  async findById(id: string): Promise<Payment | null> {
+    const db = checkPrisma();
+    return db.payment.findUnique({
+      where: { id }
+    });
+  },
+
   async createPayment(data: {
     amount: number;
     description: string;
@@ -248,163 +261,152 @@ export const paymentService = {
     paymentDate?: Date;
     paymentMethod?: string;
     processId: string;
-  }) {
-    return prisma.payment.create({
-      data,
-      include: {
-        process: true
-      }
-    });
-  },
-
-  // Buscar pagamento por ID
-  async findById(id: string) {
-    return prisma.payment.findUnique({
-      where: { id },
-      include: {
-        process: true
-      }
-    });
-  },
-
-  // Listar pagamentos de um processo
-  async listByProcess(processId: string) {
-    return prisma.payment.findMany({
-      where: { processId },
-      include: {
-        process: true
+  }): Promise<Payment> {
+    const db = checkPrisma();
+    return db.payment.create({
+      data: {
+        ...data,
+        status: data.status || 'PENDENTE'
       }
     });
   }
 };
 
-/**
- * Serviço para gerenciar tarefas
- */
+// Serviço para gerenciar tarefas
 export const taskService = {
-  /**
-   * Busca todas as tarefas de um processo
-   * @param processId ID do processo
-   * @returns Lista de tarefas
-   */
-  async findByProcess(processId: string) {
-    return await prisma.task.findMany({
-      where: { processId }
+  async findByProcess(processId: string): Promise<Task[]> {
+    const db = checkPrisma();
+    return db.task.findMany({
+      where: { processId },
+      orderBy: { dueDate: 'asc' }
     });
   },
 
-  /**
-   * Busca uma tarefa pelo ID
-   * @param id ID da tarefa
-   * @returns Tarefa encontrada ou null
-   */
-  async findById(id: string) {
-    return await prisma.task.findUnique({
+  async findById(id: string): Promise<Task | null> {
+    const db = checkPrisma();
+    return db.task.findUnique({
       where: { id }
     });
   },
 
-  /**
-   * Cria uma nova tarefa
-   * @param data Dados da tarefa
-   * @returns Tarefa criada
-   */
   async create(data: {
     title: string;
     description: string;
     status: 'PENDENTE' | 'EM_ANDAMENTO' | 'CONCLUIDA';
     dueDate: Date;
     processId: string;
-  }) {
-    return await prisma.task.create({
+  }): Promise<Task> {
+    const db = checkPrisma();
+    return db.task.create({
       data
     });
   },
 
-  /**
-   * Atualiza uma tarefa
-   * @param id ID da tarefa
-   * @param data Dados da tarefa
-   * @returns Tarefa atualizada
-   */
-  async update(id: string, data: any) {
-    return await prisma.task.update({
+  async update(id: string, data: Partial<Task>): Promise<Task> {
+    const db = checkPrisma();
+    return db.task.update({
       where: { id },
       data
     });
   },
 
-  /**
-   * Exclui uma tarefa
-   * @param id ID da tarefa
-   */
-  async delete(id: string) {
-    await prisma.task.delete({
+  async delete(id: string): Promise<void> {
+    const db = checkPrisma();
+    await db.task.delete({
       where: { id }
     });
   }
 };
 
-/**
- * Serviço para gerenciar notas
- */
+// Serviço para gerenciar notas
 export const noteService = {
-  /**
-   * Busca todas as notas de um processo
-   * @param processId ID do processo
-   * @returns Lista de notas
-   */
-  async findByProcess(processId: string) {
-    return await prisma.note.findMany({
-      where: { processId }
+  async findByProcess(processId: string): Promise<Note[]> {
+    const db = checkPrisma();
+    return db.note.findMany({
+      where: { processId },
+      orderBy: { createdAt: 'desc' }
     });
   },
 
-  /**
-   * Busca uma nota pelo ID
-   * @param id ID da nota
-   * @returns Nota encontrada ou null
-   */
-  async findById(id: string) {
-    return await prisma.note.findUnique({
+  async findById(id: string): Promise<Note | null> {
+    const db = checkPrisma();
+    return db.note.findUnique({
       where: { id }
     });
   },
 
-  /**
-   * Cria uma nova nota
-   * @param data Dados da nota
-   * @returns Nota criada
-   */
   async create(data: {
     content: string;
     processId: string;
     userId: string;
-  }) {
-    return await prisma.note.create({
+  }): Promise<Note> {
+    const db = checkPrisma();
+    return db.note.create({
       data
     });
   },
 
-  /**
-   * Atualiza uma nota
-   * @param id ID da nota
-   * @param data Dados da nota
-   * @returns Nota atualizada
-   */
-  async update(id: string, data: any) {
-    return await prisma.note.update({
+  async update(id: string, data: Partial<Note>): Promise<Note> {
+    const db = checkPrisma();
+    return db.note.update({
       where: { id },
       data
     });
   },
 
-  /**
-   * Exclui uma nota
-   * @param id ID da nota
-   */
-  async delete(id: string) {
-    await prisma.note.delete({
+  async delete(id: string): Promise<void> {
+    const db = checkPrisma();
+    await db.note.delete({
+      where: { id }
+    });
+  }
+};
+
+// Serviço para gerenciar compromissos
+export const appointmentService = {
+  async findByUser(userId: string): Promise<Appointment[]> {
+    const db = checkPrisma();
+    return db.appointment.findMany({
+      where: { userId },
+      orderBy: { startDate: 'asc' }
+    });
+  },
+
+  async findById(id: string): Promise<Appointment | null> {
+    const db = checkPrisma();
+    return db.appointment.findUnique({
+      where: { id }
+    });
+  },
+
+  async create(data: {
+    title: string;
+    description: string;
+    type: 'AUDIENCIA' | 'REUNIAO' | 'CONSULTA';
+    status: 'AGENDADO' | 'CONFIRMADO' | 'CANCELADO' | 'REALIZADO';
+    startDate: Date;
+    endDate: Date;
+    location?: string;
+    processId?: string;
+    userId: string;
+  }): Promise<Appointment> {
+    const db = checkPrisma();
+    return db.appointment.create({
+      data
+    });
+  },
+
+  async update(id: string, data: Partial<Appointment>): Promise<Appointment> {
+    const db = checkPrisma();
+    return db.appointment.update({
+      where: { id },
+      data
+    });
+  },
+
+  async delete(id: string): Promise<void> {
+    const db = checkPrisma();
+    await db.appointment.delete({
       where: { id }
     });
   }
@@ -420,7 +422,8 @@ export const messageService = {
    * @returns Lista de mensagens
    */
   async findByProcess(processId: string) {
-    return await prisma.message.findMany({
+    const db = checkPrisma();
+    return db.message.findMany({
       where: { processId }
     });
   },
@@ -431,7 +434,8 @@ export const messageService = {
    * @returns Mensagem encontrada ou null
    */
   async findById(id: string) {
-    return await prisma.message.findUnique({
+    const db = checkPrisma();
+    return db.message.findUnique({
       where: { id }
     });
   },
@@ -447,7 +451,8 @@ export const messageService = {
     senderId: string;
     receiverId: string;
   }) {
-    return await prisma.message.create({
+    const db = checkPrisma();
+    return db.message.create({
       data
     });
   },
@@ -459,7 +464,8 @@ export const messageService = {
    * @returns Mensagem atualizada
    */
   async update(id: string, data: any) {
-    return await prisma.message.update({
+    const db = checkPrisma();
+    return db.message.update({
       where: { id },
       data
     });
@@ -470,7 +476,8 @@ export const messageService = {
    * @param id ID da mensagem
    */
   async delete(id: string) {
-    await prisma.message.delete({
+    const db = checkPrisma();
+    await db.message.delete({
       where: { id }
     });
   }
@@ -486,7 +493,8 @@ export const attendanceService = {
    * @returns Lista de atendimentos
    */
   async findByProcess(processId: string) {
-    return await prisma.attendance.findMany({
+    const db = checkPrisma();
+    return db.attendance.findMany({
       where: { processId }
     });
   },
@@ -497,7 +505,8 @@ export const attendanceService = {
    * @returns Atendimento encontrado ou null
    */
   async findById(id: string) {
-    return await prisma.attendance.findUnique({
+    const db = checkPrisma();
+    return db.attendance.findUnique({
       where: { id }
     });
   },
@@ -512,7 +521,8 @@ export const attendanceService = {
     processId: string;
     userId: string;
   }) {
-    return await prisma.attendance.create({
+    const db = checkPrisma();
+    return db.attendance.create({
       data
     });
   },
@@ -524,7 +534,8 @@ export const attendanceService = {
    * @returns Atendimento atualizado
    */
   async update(id: string, data: any) {
-    return await prisma.attendance.update({
+    const db = checkPrisma();
+    return db.attendance.update({
       where: { id },
       data
     });
@@ -535,7 +546,8 @@ export const attendanceService = {
    * @param id ID do atendimento
    */
   async delete(id: string) {
-    await prisma.attendance.delete({
+    const db = checkPrisma();
+    await db.attendance.delete({
       where: { id }
     });
   }
@@ -551,7 +563,8 @@ export const notificationService = {
    * @returns Lista de notificações
    */
   async findByUser(userId: string) {
-    return await prisma.notification.findMany({
+    const db = checkPrisma();
+    return db.notification.findMany({
       where: { userId }
     });
   },
@@ -562,7 +575,8 @@ export const notificationService = {
    * @returns Notificação encontrada ou null
    */
   async findById(id: string) {
-    return await prisma.notification.findUnique({
+    const db = checkPrisma();
+    return db.notification.findUnique({
       where: { id }
     });
   },
@@ -578,7 +592,8 @@ export const notificationService = {
     userId: string;
     processId?: string;
   }) {
-    return await prisma.notification.create({
+    const db = checkPrisma();
+    return db.notification.create({
       data
     });
   },
@@ -590,7 +605,8 @@ export const notificationService = {
    * @returns Notificação atualizada
    */
   async update(id: string, data: any) {
-    return await prisma.notification.update({
+    const db = checkPrisma();
+    return db.notification.update({
       where: { id },
       data
     });
@@ -601,7 +617,8 @@ export const notificationService = {
    * @param id ID da notificação
    */
   async delete(id: string) {
-    await prisma.notification.delete({
+    const db = checkPrisma();
+    await db.notification.delete({
       where: { id }
     });
   }

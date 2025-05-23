@@ -1,4 +1,4 @@
-import { userService } from '@/lib/db';
+import client from './client';
 import { User, UserRole } from '@/types/database';
 
 /**
@@ -12,7 +12,8 @@ export const usersApi = {
    */
   async getByEmail(email: string): Promise<User | null> {
     try {
-      return await userService.findByEmail(email);
+      const response = await client.get(`/users/email/${email}`);
+      return response.data;
     } catch (error) {
       console.error(`Erro ao buscar usuário com email ${email}:`, error);
       throw new Error('Não foi possível buscar o usuário');
@@ -26,7 +27,8 @@ export const usersApi = {
    */
   async getById(id: string): Promise<User | null> {
     try {
-      return await userService.findById(id);
+      const response = await client.get(`/users/${id}`);
+      return response.data;
     } catch (error) {
       console.error(`Erro ao buscar usuário com ID ${id}:`, error);
       throw new Error('Não foi possível buscar o usuário');
@@ -45,7 +47,8 @@ export const usersApi = {
     role: UserRole;
   }): Promise<User> {
     try {
-      return await userService.createUser(data);
+      const response = await client.post('/users', data);
+      return response.data;
     } catch (error) {
       console.error('Erro ao criar usuário:', error);
       throw new Error('Não foi possível criar o usuário');
@@ -60,7 +63,8 @@ export const usersApi = {
    */
   async update(id: string, data: Partial<User>): Promise<User> {
     try {
-      return await userService.updateUser(id, data);
+      const response = await client.put(`/users/${id}`, data);
+      return response.data;
     } catch (error) {
       console.error(`Erro ao atualizar usuário com ID ${id}:`, error);
       throw new Error('Não foi possível atualizar o usuário');
@@ -74,17 +78,7 @@ export const usersApi = {
    */
   async delete(id: string): Promise<boolean> {
     try {
-      // Em um cenário real, você usaria o serviço de exclusão do Prisma
-      // Por enquanto, vamos simular a exclusão
-      const user = await userService.findById(id);
-      
-      if (!user) {
-        throw new Error('Usuário não encontrado');
-      }
-      
-      // Em um cenário real, você usaria o serviço de exclusão do Prisma
-      // await userService.deleteUser(id);
-      
+      await client.delete(`/users/${id}`);
       return true;
     } catch (error) {
       console.error(`Erro ao excluir usuário com ID ${id}:`, error);

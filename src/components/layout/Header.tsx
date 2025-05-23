@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Briefcase } from "lucide-react";
@@ -36,7 +35,7 @@ const Header = () => {
     { name: language === "pt" ? "Áreas de Atuação" : "Practice Areas", path: "/areas-de-atuacao" },
     { 
       name: language === "pt" ? "Processos" : "Cases", 
-      path: "/advogado/process-management", 
+      path: "/advogado/processos", 
       icon: <Briefcase className="mr-2 h-4 w-4" /> 
     },
     { name: language === "pt" ? "Blog" : "Blog", path: "/blog" },

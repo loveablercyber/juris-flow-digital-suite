@@ -17,14 +17,18 @@ export interface Payment {
 }
 
 // Tipos para usuários
-export type UserRole = 'ADMIN' | 'ADVOGADO' | 'CLIENTE';
+export type UserRole = 'ADMIN' | 'LAWYER' | 'CLIENT';
 
 export interface User {
   id: string;
-  email: string;
   name: string;
+  email: string;
   password: string;
   role: UserRole;
+  status: 'active' | 'inactive';
+  photoUrl?: string;
+  whatsappNumber?: string;
+  isOnline?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,17 +38,19 @@ export type DocumentType = 'PETICAO' | 'CONTRATO' | 'SENTENCA' | 'OUTRO';
 
 export interface Document {
   id: string;
-  title: string;
-  description: string;
-  type: DocumentType;
+  name: string;
+  type: string;
+  description?: string;
   fileUrl: string;
-  processId: string;
+  tags: string[];
+  userId: string;
+  processId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 // Tipos para compromissos
-export type AppointmentType = 'AUDIENCIA' | 'REUNIAO' | 'PRAZO' | 'OUTRO';
+export type AppointmentType = 'AUDIENCIA' | 'REUNIAO' | 'CONSULTA';
 export type AppointmentStatus = 'AGENDADO' | 'CONFIRMADO' | 'CANCELADO' | 'REALIZADO';
 
 export interface Appointment {
@@ -56,8 +62,8 @@ export interface Appointment {
   startDate: Date;
   endDate: Date;
   location?: string;
-  userId: string;
   processId?: string;
+  userId: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -114,6 +120,43 @@ export interface Notification {
   message: string;
   userId: string;
   processId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Tipos para clientes
+export type ClientStatus = 'active' | 'inactive';
+
+export interface Client {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  cpf: string;
+  status: ClientStatus;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Process {
+  id: string;
+  number: string;
+  title: string;
+  description?: string;
+  type: string;
+  area: string;
+  status: 'AGUARDANDO' | 'EM_ANDAMENTO' | 'ARQUIVADO' | 'CONCLUIDO';
+  court?: string;
+  judge?: string;
+  instance?: string;
+  priority: 'BAIXA' | 'MEDIA' | 'ALTA' | 'URGENTE';
+  emergency: boolean;
+  startDate: Date;
+  nextHearing?: Date;
+  distributionDate?: Date;
+  userId: string;
+  clientId?: string;
   createdAt: Date;
   updatedAt: Date;
 } 

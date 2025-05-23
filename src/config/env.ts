@@ -11,6 +11,10 @@ export const env = {
   // Banco de dados
   DATABASE_URL: process.env.DATABASE_URL,
   
+  // Supabase
+  SUPABASE_URL: process.env.SUPABASE_URL,
+  SUPABASE_KEY: process.env.SUPABASE_KEY,
+  
   // Autenticação
   JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
@@ -36,7 +40,7 @@ export const env = {
   
   // Verifica se todas as variáveis de ambiente necessárias estão definidas
   validate() {
-    const required = ['DATABASE_URL'];
+    const required = ['DATABASE_URL', 'SUPABASE_URL', 'SUPABASE_KEY'];
     const missing = required.filter(key => !process.env[key]);
     
     if (missing.length > 0) {

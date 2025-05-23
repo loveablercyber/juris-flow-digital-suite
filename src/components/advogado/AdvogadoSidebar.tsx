@@ -17,7 +17,7 @@ import {
 const AdvogadoSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
-
+  
   const menuItems = [
     {
       title: "Dashboard",
@@ -32,7 +32,7 @@ const AdvogadoSidebar = () => {
     {
       title: "Agenda",
       icon: <Calendar className="h-5 w-5" />,
-      path: "/advogado/agenda"
+      path: "/advogado/agendamentos"
     },
     {
       title: "Clientes",
@@ -55,7 +55,7 @@ const AdvogadoSidebar = () => {
       path: "/advogado/configuracoes"
     }
   ];
-
+  
   return (
     <div
       className={cn(
@@ -81,7 +81,7 @@ const AdvogadoSidebar = () => {
       </div>
 
       <nav className="p-4 space-y-2">
-        {menuItems.map((item) => (
+                {menuItems.map((item) => (
           <Link
             key={item.path}
             to={item.path}

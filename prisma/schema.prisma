@@ -6,25 +6,33 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 // Modelo de Usuário
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  role      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String        @id @default(uuid())
+  name          String
+  email         String        @unique
+  password      String
+  role          UserRole      @default(LAWYER)
+  status        UserStatus    @default(active)
+  photoUrl      String?
+  whatsappNumber String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  processes     Process[]
+  clients       Client[]
+  documents     Document[]
+  notes         Note[]
+  appointments  Appointment[]
+
+  // Campos para atendimento online
+  isOnline        Boolean   @default(false)
+  lastLogin       DateTime?
 
   // Relacionamentos
-  processes     Process[]     @relation("ProcessUsers")
-  documents     Document[]
-  appointments  Appointment[]
-  notes         Note[]
   messages      Message[]     @relation("MessageSender")
   receivedMessages Message[]  @relation("MessageReceiver")
   attendances   Attendance[]
@@ -35,111 +43,106 @@ model User {
 
 // Modelo de Processo
 model Process {
-  id              String   @id @default(uuid())
-  number          String
+  id              String        @id @default(uuid())
+  number          String        @unique
   title           String
   description     String?
   type            String
   area            String
-  status          String
+  status          ProcessStatus @default(AGUARDANDO)
   court           String?
   judge           String?
   instance        String?
-  priority        String?
-  emergency       Boolean  @default(false)
+  priority        Priority      @default(MEDIA)
+  emergency       Boolean       @default(false)
   startDate       DateTime
   nextHearing     DateTime?
   distributionDate DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  // Relacionamentos
-  users           User[]         @relation("ProcessUsers")
+  userId          String
+  clientId        String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  user            User          @relation(fields: [userId], references: [id])
+  client          Client?       @relation(fields: [clientId], references: [id])
   documents       Document[]
-  appointments    Appointment[]
   payments        Payment[]
   tasks           Task[]
   notes           Note[]
-  messages        Message[]
-  attendances     Attendance[]
+  appointments    Appointment[]
+  messages      Message[]
+  attendances   Attendance[]
+  notifications Notification[]
 
   @@map("processes")
 }
 
 // Modelo de Documento
 model Document {
-  id          String   @id @default(uuid())
-  title       String
-  description String
+  id          String    @id @default(uuid())
+  name        String
   type        String
+  description String?
   fileUrl     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relacionamentos
-  processId   String
-  process     Process  @relation(fields: [processId], references: [id])
+  tags        String?
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  processId   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id])
+  process     Process?  @relation(fields: [processId], references: [id])
 
   @@map("documents")
 }
 
 // Modelo de Compromisso
 model Appointment {
-  id          String   @id @default(uuid())
+  id          String            @id @default(uuid())
   title       String
   description String
-  type        String
-  status      String
+  type        AppointmentType
+  status      AppointmentStatus @default(AGENDADO)
   startDate   DateTime
   endDate     DateTime
   location    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relacionamentos
   processId   String?
-  process     Process? @relation(fields: [processId], references: [id])
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  process     Process?          @relation(fields: [processId], references: [id])
+  user        User              @relation(fields: [userId], references: [id])
 
   @@map("appointments")
 }
 
 // Modelo de Pagamento
 model Payment {
-  id            String   @id @default(uuid())
+  id            String          @id @default(uuid())
   amount        Float
   description   String
-  type          String
-  status        String
+  type          PaymentType
+  status        PaymentStatus   @default(PENDENTE)
   dueDate       DateTime
   paymentDate   DateTime?
   paymentMethod String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  // Relacionamentos
   processId     String
-  process       Process  @relation(fields: [processId], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  process       Process         @relation(fields: [processId], references: [id])
 
   @@map("payments")
 }
 
 // Modelo de Tarefa
 model Task {
-  id          String   @id @default(uuid())
+  id          String      @id @default(uuid())
   title       String
   description String
-  status      String
+  status      TaskStatus  @default(PENDENTE)
   dueDate     DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relacionamentos
   processId   String
-  process     Process  @relation(fields: [processId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  process     Process     @relation(fields: [processId], references: [id])
 
   @@map("tasks")
 }
@@ -148,14 +151,12 @@ model Task {
 model Note {
   id        String   @id @default(uuid())
   content   String
+  processId String
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // Relacionamentos
-  processId String
-  process   Process @relation(fields: [processId], references: [id])
-  userId    String
-  user      User    @relation(fields: [userId], references: [id])
+  process   Process  @relation(fields: [processId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("notes")
 }
@@ -209,4 +210,78 @@ model Notification {
   process   Process? @relation(fields: [processId], references: [id])
 
   @@map("notifications")
+}
+
+// Modelo de Cliente
+model Client {
+  id        String    @id @default(uuid())
+  name      String
+  email     String
+  phone     String
+  cpf       String    @unique
+  status    UserStatus @default(active)
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id])
+  processes Process[]
+
+  @@map("clients")
+}
+
+enum UserRole {
+  ADMIN
+  LAWYER
+  CLIENT
+}
+
+enum UserStatus {
+  active
+  inactive
+}
+
+enum ProcessStatus {
+  AGUARDANDO
+  EM_ANDAMENTO
+  ARQUIVADO
+  CONCLUIDO
+}
+
+enum Priority {
+  BAIXA
+  MEDIA
+  ALTA
+  URGENTE
+}
+
+enum PaymentType {
+  HONORARIOS
+  CUSTAS
+  CONSULTA
+}
+
+enum PaymentStatus {
+  PENDENTE
+  PAGO
+  ATRASADO
+  CANCELADO
+}
+
+enum TaskStatus {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDA
+}
+
+enum AppointmentType {
+  AUDIENCIA
+  REUNIAO
+  CONSULTA
+}
+
+enum AppointmentStatus {
+  AGENDADO
+  CONFIRMADO
+  CANCELADO
+  REALIZADO
 } 

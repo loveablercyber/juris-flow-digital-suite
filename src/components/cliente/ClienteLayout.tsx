@@ -67,11 +67,6 @@ const ClienteLayout = () => {
       path: "/cliente/pagamentos" 
     },
     { 
-      icon: <HelpCircle className="h-5 w-5" />, 
-      label: "Suporte", 
-      path: "/cliente/suporte" 
-    },
-    { 
       icon: <Settings className="h-5 w-5" />, 
       label: "Configurações", 
       path: "/cliente/configuracoes" 

@@ -1,8 +1,8 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import QuemSomos from "./pages/QuemSomos";
 import AreasDeAtuacao from "./pages/AreasDeAtuacao";
@@ -46,81 +46,87 @@ import Chat from "./pages/advogado/Chat";
 import AdvogadoSettings from "./pages/advogado/Settings";
 import Agendamentos from "./pages/advogado/Agendamentos";
 import ProcessManagement from "./pages/advogado/ProcessManagement";
+import ProcessoDetalhes from "./pages/advogado/ProcessoDetalhes";
 import Notificacoes from "./pages/advogado/Notificacoes";
 import Pagamentos from "./pages/advogado/Pagamentos";
 import CobrancaDetalhes from "./pages/advogado/CobrancaDetalhes";
+import Configuracoes from "./pages/advogado/Configuracoes";
+import Clientes from "./pages/advogado/Clientes";
+import ClienteDetalhes from "./pages/advogado/ClienteDetalhes";
+import Perfil from "./pages/advogado/Perfil";
 
 // Cliente pages
 import ClienteLogin from "./pages/cliente/Login";
 import ClienteRoutes from "./routes/ClienteRoutes";
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <AuthProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/quem-somos" element={<QuemSomos />} />
-          <Route path="/areas-de-atuacao" element={<AreasDeAtuacao />} />
-          <Route path="/areas-de-atuacao/:id" element={<AreaDetalhe />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:id" element={<BlogPost />} />
-          <Route path="/atendimento" element={<Atendimento />} />
-          <Route path="/agendamento" element={<Agendamento />} />
-          <Route path="/wiki-faq" element={<WikiFaq />} />
-          <Route path="/checklists" element={<Checklists />} />
-          <Route path="/ebooks" element={<Ebooks />} />
-          <Route path="/newsletter" element={<Newsletter />} />
-          <Route path="/webinars" element={<Webinars />} />
-          
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="pages" element={<PagesManagement />} />
-            <Route path="blog" element={<BlogManagement />} />
-            <Route path="seo" element={<SeoManagement />} />
-            <Route path="users" element={<UsersManagement />} />
-            <Route path="permissions" element={<PermissionsManagement />} />
-            <Route path="settings" element={<SiteSettings />} />
-            <Route path="statistics" element={<Statistics />} />
-            <Route path="ebooks" element={<EbooksManagement />} />
-            <Route path="logs" element={<LogsActivity />} />
-            <Route path="notificacoes" element={<NotificacoesAdmin />} />
-          </Route>
-          
-          {/* Advogado Routes */}
-          <Route path="/advogado" element={<AdvogadoLogin />} />
-          <Route path="/advogado" element={<AdvogadoLayout />}>
-            <Route path="dashboard" element={<AdvogadoDashboard />} />
-            <Route path="calendario" element={<Calendario />} />
-            <Route path="documentos" element={<Documentos />} />
-            <Route path="tarefas" element={<Tarefas />} />
-            <Route path="propostas" element={<Propostas />} />
-            <Route path="blog" element={<AdvogadoBlog />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="settings" element={<AdvogadoSettings />} />
-            <Route path="agendamentos" element={<Agendamentos />} />
-            <Route path="processos" element={<ProcessManagement />} />
-            <Route path="notificacoes" element={<Notificacoes />} />
-            <Route path="pagamentos" element={<Pagamentos />} />
-            <Route path="cobrancas/:id" element={<CobrancaDetalhes />} />
-          </Route>
-          
-          {/* Cliente Routes */}
-          <Route path="/login" element={<ClienteLogin />} />
-          <Route path="/cliente/*" element={<ClienteRoutes />} />
-          
-          {/* Catch-all route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/quem-somos" element={<QuemSomos />} />
+        <Route path="/areas-de-atuacao" element={<AreasDeAtuacao />} />
+        <Route path="/areas-de-atuacao/:id" element={<AreaDetalhe />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogPost />} />
+        <Route path="/atendimento" element={<Atendimento />} />
+        <Route path="/agendamento" element={<Agendamento />} />
+        <Route path="/wiki-faq" element={<WikiFaq />} />
+        <Route path="/checklists" element={<Checklists />} />
+        <Route path="/ebooks" element={<Ebooks />} />
+        <Route path="/newsletter" element={<Newsletter />} />
+        <Route path="/webinars" element={<Webinars />} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="pages" element={<PagesManagement />} />
+          <Route path="blog" element={<BlogManagement />} />
+          <Route path="seo" element={<SeoManagement />} />
+          <Route path="users" element={<UsersManagement />} />
+          <Route path="permissions" element={<PermissionsManagement />} />
+          <Route path="settings" element={<SiteSettings />} />
+          <Route path="statistics" element={<Statistics />} />
+          <Route path="ebooks" element={<EbooksManagement />} />
+          <Route path="logs" element={<LogsActivity />} />
+          <Route path="notificacoes" element={<NotificacoesAdmin />} />
+        </Route>
+        
+        {/* Advogado Routes */}
+        <Route path="/advogado" element={<AdvogadoLogin />} />
+        <Route path="/advogado" element={<AdvogadoLayout />}>
+          <Route path="dashboard" element={<AdvogadoDashboard />} />
+          <Route path="calendario" element={<Calendario />} />
+          <Route path="documentos" element={<Documentos />} />
+          <Route path="tarefas" element={<Tarefas />} />
+          <Route path="propostas" element={<Propostas />} />
+          <Route path="blog" element={<AdvogadoBlog />} />
+          <Route path="chat" element={<Chat />} />
+          <Route path="settings" element={<AdvogadoSettings />} />
+          <Route path="agendamentos" element={<Agendamentos />} />
+          <Route path="processos" element={<ProcessManagement />} />
+          <Route path="processos/:id" element={<ProcessoDetalhes />} />
+          <Route path="notificacoes" element={<Notificacoes />} />
+          <Route path="pagamentos" element={<Pagamentos />} />
+          <Route path="cobrancas/:id" element={<CobrancaDetalhes />} />
+          <Route path="configuracoes" element={<Configuracoes />} />
+          <Route path="clientes" element={<Clientes />} />
+          <Route path="clientes/:id" element={<ClienteDetalhes />} />
+          <Route path="perfil" element={<Perfil />} />
+        </Route>
+        
+        {/* Cliente Routes */}
+        <Route path="/login" element={<ClienteLogin />} />
+        <Route path="/cliente/*" element={<ClienteRoutes />} />
+        
+        {/* Catch-all route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </TooltipProvider>
-  </QueryClientProvider>
+  </AuthProvider>
 );
 
 export default App;

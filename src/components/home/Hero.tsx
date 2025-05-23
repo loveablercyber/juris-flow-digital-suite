@@ -64,7 +64,12 @@ const Hero = () => {
           
           <div className="hidden lg:block relative">
             <div className="relative rounded-xl overflow-hidden shadow-2xl animate-scale-in bg-navy-600/50 h-[500px] flex items-center justify-center">
-              <p className="text-white/50 text-lg">Imagem do Hero</p>
+              <img 
+                src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                alt="Advogado profissional em ambiente corporativo" 
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 to-navy-900/30"></div>
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-navy-900/90 to-transparent p-6">
                 <div className="flex items-center gap-4">
                   <div className="h-14 w-14 rounded-full bg-gold-400 flex items-center justify-center text-navy-800 text-xl font-bold">
@@ -80,20 +85,6 @@ const Hero = () => {
                       ))}
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="absolute -bottom-8 -left-8 bg-white dark:bg-navy-800 p-4 rounded-lg shadow-lg animate-scale-in" style={{ animationDelay: "0.2s" }}>
-              <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Atendimento 24h</p>
-                  <p className="font-bold text-navy-800 dark:text-white">Sempre Disponível</p>
                 </div>
               </div>
             </div>
