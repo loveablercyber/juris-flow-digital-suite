@@ -12,9 +12,24 @@ const WhatsAppButton = () => {
   useEffect(() => {
     const fetchOnlineLawyers = async () => {
       try {
-        const onlineLawyers = await availabilityApi.getOnlineLawyers();
-        setLawyers(onlineLawyers);
+        // Durante o desenvolvimento, vamos buscar do localStorage
+        const advogadoUser = localStorage.getItem('advogadoUser');
+        if (advogadoUser) {
+          const user = JSON.parse(advogadoUser);
+          if (user.isOnline) {
+            setLawyers([user]);
+          } else {
+            setLawyers([]);
+          }
+        } else {
+          setLawyers([]);
+        }
         setLoading(false);
+
+        // Código original da API (comentado durante o desenvolvimento)
+        // const onlineLawyers = await availabilityApi.getOnlineLawyers();
+        // setLawyers(onlineLawyers);
+        // setLoading(false);
       } catch (error) {
         console.error('Erro ao carregar advogados online:', error);
         setLoading(false);
