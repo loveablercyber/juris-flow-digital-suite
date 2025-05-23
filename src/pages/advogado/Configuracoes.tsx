@@ -23,6 +23,8 @@ const Configuracoes = () => {
           <TabsTrigger value="agenda">Configurações de Agenda</TabsTrigger>
           <TabsTrigger value="atendimento">Atendimento Online</TabsTrigger>
           <TabsTrigger value="seguranca">Segurança da Conta</TabsTrigger>
+          <TabsTrigger value="integracao">Integrações</TabsTrigger>
+          <TabsTrigger value="aparencia">Aparência</TabsTrigger>
         </TabsList>
 
         <TabsContent value="perfil" className="space-y-4">
@@ -164,6 +166,79 @@ const Configuracoes = () => {
                 <Input id="confirmar-senha" type="password" />
               </div>
               <Button>Alterar Senha</Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="integracao" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Integrações</CardTitle>
+              <CardDescription>
+                Conecte sua conta com outros serviços
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Google Calendar</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Sincronize sua agenda com o Google Calendar
+                  </p>
+                </div>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Microsoft Outlook</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Sincronize sua agenda com o Outlook
+                  </p>
+                </div>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Dropbox</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Conecte sua conta ao Dropbox para armazenamento de arquivos
+                  </p>
+                </div>
+                <Switch />
+              </div>
+              <Button>Salvar Integrações</Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="aparencia" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Aparência</CardTitle>
+              <CardDescription>
+                Personalize a aparência da sua interface
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Modo Escuro</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Ative o modo escuro para reduzir o cansaço visual
+                  </p>
+                </div>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Fonte Maior</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Aumente o tamanho da fonte para melhor legibilidade
+                  </p>
+                </div>
+                <Switch />
+              </div>
+              <Button>Salvar Preferências</Button>
             </CardContent>
           </Card>
         </TabsContent>

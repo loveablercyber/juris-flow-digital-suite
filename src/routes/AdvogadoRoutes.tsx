@@ -12,6 +12,9 @@ import Perfil from "@/pages/advogado/Perfil";
 import Configuracoes from "@/pages/advogado/Configuracoes";
 import Agendamentos from "@/pages/advogado/Agendamentos";
 import Login from "@/pages/advogado/Login";
+import Tarefas from "@/pages/advogado/Tarefas";
+import Chat from "@/pages/advogado/Chat";
+import Notificacoes from "@/pages/advogado/Notificacoes";
 
 // Lazy loading para as páginas do advogado
 const CobrancaDetalhes = lazy(() => import("@/pages/advogado/CobrancaDetalhes"));
@@ -35,7 +38,10 @@ const AdvogadoRoutes = () => {
         <Route path="clientes/:id" element={<ClienteDetalhes />} />
         <Route path="documentos" element={<Documentos />} />
         <Route path="pagamentos" element={<Pagamentos />} />
-        <Route path="agenda" element={<Agendamentos />} />
+        <Route path="agendamentos" element={<Agendamentos />} />
+        <Route path="tarefas" element={<Tarefas />} />
+        <Route path="chat" element={<Chat />} />
+        <Route path="notificacoes" element={<Notificacoes />} />
         <Route path="perfil" element={<Perfil />} />
         <Route path="configuracoes" element={<Configuracoes />} />
       </Route>
