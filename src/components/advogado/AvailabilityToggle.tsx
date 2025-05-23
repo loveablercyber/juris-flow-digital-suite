@@ -9,24 +9,48 @@ const AvailabilityToggle = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    if (userId) {
-      // Aqui você pode buscar o status atual do usuário
-      // Por enquanto, vamos usar um estado local
-      setIsOnline(false);
+    const userData = localStorage.getItem('advogadoUser');
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        // Se o usuário não tiver um ID, vamos criar um
+        if (!user.id) {
+          user.id = 'adv-' + Math.random().toString(36).substring(2, 9);
+          localStorage.setItem('advogadoUser', JSON.stringify(user));
+        }
+        
+        // Aqui você pode buscar o status atual do usuário
+        // Por enquanto, vamos usar um estado local
+        setIsOnline(false);
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao processar dados do usuário:', error);
+        setLoading(false);
+      }
+    } else {
       setLoading(false);
     }
   }, []);
 
   const handleToggle = async () => {
     try {
-      const userId = localStorage.getItem('userId');
-      if (!userId) {
+      const userData = localStorage.getItem('advogadoUser');
+      if (!userData) {
         throw new Error('Usuário não autenticado');
       }
 
+      const user = JSON.parse(userData);
+      const userId = user.id || 'adv-' + Math.random().toString(36).substring(2, 9);
+      
       const newStatus = !isOnline;
-      await availabilityApi.setAvailability(userId, newStatus);
+      
+      // Atualizar o status no localStorage
+      user.isOnline = newStatus;
+      localStorage.setItem('advogadoUser', JSON.stringify(user));
+      
+      // Chamar a API (comentado para simulação)
+      // await availabilityApi.setAvailability(userId, newStatus);
+      
       setIsOnline(newStatus);
 
       toast({
