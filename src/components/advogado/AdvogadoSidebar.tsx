@@ -11,7 +11,10 @@ import {
   CreditCard,
   LogOut,
   Menu,
-  X
+  X,
+  CheckSquare,
+  MessageSquare,
+  Bell
 } from "lucide-react";
 
 const AdvogadoSidebar = () => {
@@ -38,6 +41,21 @@ const AdvogadoSidebar = () => {
       title: "Clientes",
       icon: <Users className="h-5 w-5" />,
       path: "/advogado/clientes"
+    },
+    {
+      title: "Tarefas",
+      icon: <CheckSquare className="h-5 w-5" />,
+      path: "/advogado/tarefas"
+    },
+    {
+      title: "Chat",
+      icon: <MessageSquare className="h-5 w-5" />,
+      path: "/advogado/chat"
+    },
+    {
+      title: "Notificações",
+      icon: <Bell className="h-5 w-5" />,
+      path: "/advogado/notificacoes"
     },
     {
       title: "Documentos",
